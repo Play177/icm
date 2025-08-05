@@ -1,83 +1,113 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Rangos | Leo Poker R® </title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      padding-bottom: 70px; /* espacio para la botonera */
-      background-color: #000; /* fondo negro */
-      color: #fff;
-    }
+<title>Tablas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    .footer-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background-color: #000;
-      border-top: 2px solid #FFD700;
-      padding: 12px 0;
-      box-shadow: 0 -2px 5px rgba(255, 215, 0, 0.2);
-      z-index: 1000;
-    }
+<style>
+/* Estilos generales */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  padding-bottom: 70px; /* espacio para la botonera */
+  background-color: #000;
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-    .footer-nav button {
-      background-color: #FFD700; /* amarillo */
-      border: none;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
+/* Contenedor de la tabla superior */
+.table-container {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
 
-    .footer-nav button:hover {
-      background-color: #000;
-      color: #FFD700;
-      border: 2px solid #FFD700;
-    }
-    
-    /* Estilos para el iframe */
-    .fixed-iframe {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      z-index: 1;
-    }
-    
-    .content-above-iframe {
-      position: relative;
-      z-index: 2;
-      background-color: #000;
-      padding: 10px;
-    }
-  </style>
+/* Contenedor del iframe */
+.iframe-container {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilo del iframe */
+.iframe-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Barra de navegación inferior */
+.footer-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #000;
+  border-top: 2px solid #FFD700;
+  padding: 12px 0;
+  box-shadow: 0 -2px 5px rgba(255, 215, 0, 0.2);
+  z-index: 1000;
+}
+
+.footer-nav button {
+  background-color: #FFD700;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.footer-nav button:hover {
+  background-color: #000;
+  color: #FFD700;
+  border: 2px solid #FFD700;
+}
+
+/* Estilos para la tabla de botones */
+table.default {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.default img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+</style>
 </head>
+
 <body>
 
-<div class="content-above-iframe">
+<!-- Tabla superior con botones -->
+<div class="table-container">
   <table class="default">
     <tr>
-      <td><a href="https://intellipoker.github.io/leopoker-contra/" rel="nofollow"><img src="basic.png"/></a></td>
-      <td><a href="https://intellipoker.github.io/leopoker-defesa/" rel="nofollow"><img src="ft.png"/></a></td>
-      <td><a href="https://intellipoker.github.io/leopoker/bio.html" rel="nofollow"><img src="premium.png"/></a></td>
+      <td><a href="https://intellipoker.github.io/leopoker-contra/" rel="nofollow"><img src="button1.png" alt="Botón 1"/></a></td>
+      <td><a href="https://intellipoker.github.io/leopoker-defesa/" rel="nofollow"><img src="button111.png" alt="Botón 2"/></a></td>
+      <td><a href="https://intellipoker.github.io/leopoker/bio.html" rel="nofollow"><img src="button.png" alt="Botón 3"/></a></td>
     </tr>
   </table>
 </div>
 
-<!-- Aqui va el IFRAME -->
-<iframe class="fixed-iframe" src="basic.html" name="mainFrame" id="mainFrame"></iframe>
+<!-- Contenedor del iframe -->
+<div class="iframe-container">
+  <iframe class="iframe-content" src="https://play177.github.io/icm/basic.html" name="mainFrame" id="mainFrame"></iframe>
+</div>
 
+<!-- Barra de navegación inferior -->
 <div class="footer-nav">
   <a href="bio.html" target="mainFrame">
     <button>Inicio</button>
@@ -86,7 +116,7 @@
     <button>Visor</button>
   </a>
   <a href="desafio18.html" target="mainFrame">
-    <button>Curso!</button>
+    <button>Desafio!</button>
   </a>
 </div>
 

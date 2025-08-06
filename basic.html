@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ICM 8-MAX - Edición High-Tech</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>ICM Basic</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -116,13 +115,13 @@
 </head>
 <body>
   <div class="container">
-    <h1>ICM 8-MAX <span class="subtitle">Edición High-Tech</span></h1>
+    <h1>ICM  <span class="subtitle">Basic</span></h1>
 
     <div class="input-section">
       <label>Fichas de los Jugadores (separadas por comas)</label>
       <input id="stacks" placeholder="Ej: 5000,4000,3000,2000">
 
-      <label>Distribución de Premios (%) (Ej: 50,30,20 o 40,25,20,15)</label>
+      <label>Distribución de Premios (Ej: 50,30,20 o 40,25,20,15)</label>
       <input id="payouts" placeholder="Ej: 50,30,20">
 
       <label>Simular Eliminación (opcional - jugadores separados por comas, comenzando en 1)</label>
@@ -130,156 +129,117 @@
 
       <div class="buttons">
         <button onclick="calcularICM()">Calcular ICM</button>
-        <button onclick="exportarCSV()">Exportar CSV</button>
-        <button onclick="exportarPDF()">Exportar PDF</button>
       </div>
 
       <pre id="resultadoICM"></pre>
       <canvas id="graficoICM"></canvas>
     </div>
-
-    <div class="input-section">
-      <label>Mano 1 (ej: AhKh)</label>
-      <input id="mao1" placeholder="Ej: AhKh">
-      <label>Mano 2 (ej: QcQs)</label>
-      <input id="mao2" placeholder="Ej: QcQs">
-      <label>Board (opcional - ej: 2h7dTc)</label>
-      <input id="board" placeholder="Ej: 2h7dTc">
-      <div class="buttons">
-        <button onclick="calcularOddsMock()">Calcular Probabilidad</button>
-      </div>
-      <pre id="resultadoOdds"></pre>
-    </div>
   </div>
+<script>
+  let chartICM = null;
 
-  <script>
-    let chartICM = null;
-    let ultimoResultado = {};
+  // Algoritmo ICM exacto usando permutaciones (brute force)
+  function calculateICM(stacks, payouts) {
+    const n = stacks.length;
+    const premios = payouts.slice().sort((a, b) => b - a);
+    const icmValues = Array(n).fill(0);
 
-    function permutaciones(arr) {
-      if (arr.length === 1) return [arr];
-      let result = [];
-      for (let i = 0; i < arr.length; i++) {
-        const current = arr[i];
-        const remaining = arr.slice(0, i).concat(arr.slice(i + 1));
-        const perms = permutaciones(remaining);
-        for (const p of perms) result.push([current].concat(p));
+    function permute(playersLeft, probSoFar, payoutsLeft) {
+      if (payoutsLeft.length === 0) return;
+
+      const totalStack = playersLeft.reduce((acc, p) => acc + stacks[p], 0);
+
+      for (let i = 0; i < playersLeft.length; i++) {
+        const p = playersLeft[i];
+        const prob = stacks[p] / totalStack;
+        const newProb = probSoFar * prob;
+
+        // Asignar premio actual a este jugador
+        icmValues[p] += newProb * payoutsLeft[0];
+
+        // Continuar con próximos premios y jugadores
+        const newPlayers = playersLeft.slice();
+        newPlayers.splice(i, 1);
+        permute(newPlayers, newProb, payoutsLeft.slice(1));
       }
-      return result;
     }
 
-    function calcularICM() {
-      const stacks = document.getElementById("stacks").value.trim().split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
-      const payouts = document.getElementById("payouts").value.trim().split(',').map(x => parseFloat(x.trim()) / 100).filter(x => !isNaN(x));
-      const eliminar = document.getElementById("eliminar").value.trim();
+    const active = stacks.map((s, i) => i).filter(i => stacks[i] > 0);
+    permute(active, 1, premios);
+    return icmValues;
+  }
 
-      if (eliminar !== "") {
-        eliminar.split(',').map(x => parseInt(x.trim()) - 1).forEach(idx => {
-          if (idx >= 0 && idx < stacks.length) stacks[idx] = 0;
-        });
-      }
+  function calcularICM() {
+    const stackInput = document.getElementById("stacks").value;
+    const payoutInput = document.getElementById("payouts").value;
+    const eliminarInput = document.getElementById("eliminar").value;
 
-      if (stacks.length === 0 || payouts.length === 0) {
-        document.getElementById("resultadoICM").textContent = "Ingrese fichas y premios válidos.";
-        return;
-      }
+    let stacks = stackInput.split(",").map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+    let payouts = payoutInput.split(",").map(p => parseFloat(p.trim())).filter(n => !isNaN(n));
+    const eliminados = eliminarInput
+      .split(",")
+      .map(i => parseInt(i.trim()) - 1)
+      .filter(i => !isNaN(i));
 
-      const totalPrize = 100;
-      const resultado = {};
-      stacks.forEach((_, i) => resultado[i] = 0);
-      const perms = permutaciones(stacks.map((_, i) => i));
+    eliminados.forEach(i => {
+      if (i >= 0 && i < stacks.length) stacks[i] = 0;
+    });
 
-      for (const orden of perms) {
-        let prob = 1;
-        let restante = orden.slice();
-        let valores = [...stacks];
-        for (let pos = 0; pos < Math.min(restante.length, payouts.length); pos++) {
-          const totalStack = restante.reduce((sum, idx) => sum + valores[idx], 0);
-          const actual = restante[0];
-          const p = valores[actual] / totalStack;
-          prob *= p;
-          resultado[actual] += prob * payouts[pos] * totalPrize;
-          restante.shift();
+    if (stacks.length === 0 || payouts.length === 0) {
+      alert("Por favor ingresa stacks y premios válidos en dinero real.");
+      return;
+    }
+
+    const icmRaw = calculateICM(stacks, payouts);
+
+    // Mostrar resultados
+    mostrarResultados(icmRaw);
+    actualizarGrafico(icmRaw);
+  }
+
+  function mostrarResultados(resultado) {
+    let salida = "Resultados ICM:\n";
+    resultado.forEach((v, i) => {
+      salida += `Jugador ${i + 1}: $${v.toFixed(2)}\n`;
+    });
+    document.getElementById("resultadoICM").textContent = salida;
+  }
+
+  function actualizarGrafico(resultado) {
+    const labels = resultado.map((_, i) => `Jugador ${i + 1}`);
+    const valores = resultado;
+    const colores = valores.map((_, i, arr) => {
+      const rank = [...arr].sort((a, b) => b - a).indexOf(arr[i]);
+      return rank < 3 ? ["#00f2fe", "#ff00ff", "#00ff99"][rank] : "#888";
+    });
+
+    if (chartICM) chartICM.destroy();
+    const ctx = document.getElementById("graficoICM").getContext("2d");
+    chartICM = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Valor ICM ($)',
+          data: valores.map(v => v.toFixed(2)),
+          backgroundColor: colores
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Valor ICM ($)' }
+          }
         }
       }
+    });
+  }
+</script>
 
-      let salida = "Resultados ICM:\n";
-      Object.entries(resultado).forEach(([i, v]) => {
-        salida += `Jugador ${+i + 1}: $${v.toFixed(2)}\n`;
-      });
-      document.getElementById("resultadoICM").textContent = salida;
-      ultimoResultado = resultado;
-      actualizarGrafico(resultado);
-    }
 
-    function actualizarGrafico(resultado) {
-      const labels = Object.keys(resultado).map(i => `Jugador ${+i + 1}`);
-      const valores = Object.values(resultado);
-      const colores = valores.map((_, i, arr) => {
-        const rank = [...arr].sort((a,b) => b-a).indexOf(arr[i]);
-        return rank < 3 ? ["#00f2fe", "#ff00ff", "#00ff99"][rank] : "#888";
-      });
 
-      if (chartICM) chartICM.destroy();
-      const ctx = document.getElementById("graficoICM").getContext("2d");
-      chartICM = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Valor ICM ($)',
-            data: valores.map(v => v.toFixed(2)),
-            backgroundColor: colores
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    }
-
-    function calcularOddsMock() {
-      const m1 = document.getElementById("mao1").value.trim().toUpperCase();
-      const m2 = document.getElementById("mao2").value.trim().toUpperCase();
-      let resultado = "Probabilidad estimada:\n";
-
-      if (m1.includes("A") && m2.includes("Q")) {
-        resultado += "Mano 1: 65%\nMano 2: 35%";
-      } else if (m1 === m2) {
-        resultado += "Empate: 50% para cada";
-      } else {
-        resultado += "Mano 1: 50%\nMano 2: 50% (estimado)";
-      }
-
-      document.getElementById("resultadoOdds").textContent = resultado;
-    }
-
-    function exportarCSV() {
-      if (!ultimoResultado || Object.keys(ultimoResultado).length === 0) return alert("Calcule el ICM primero.");
-      let csv = "Jugador,ICM\n";
-      Object.entries(ultimoResultado).forEach(([i, v]) => csv += `Jugador ${+i + 1},${v.toFixed(2)}\n`);
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'resultado_icm.csv';
-      a.click();
-    }
-
-    function exportarPDF() {
-      if (!ultimoResultado || Object.keys(ultimoResultado).length === 0) return alert("Calcule el ICM primero.");
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(14);
-      doc.text("Resultados ICM", 20, 20);
-      let y = 30;
-      Object.entries(ultimoResultado).forEach(([i, v]) => {
-        doc.text(`Jugador ${+i + 1}: $${v.toFixed(2)}`, 20, y);
-        y += 10;
-      });
-      doc.save("resultado_icm.pdf");
-    }
-  </script>
 </body>
 </html>
+

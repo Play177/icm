@@ -1,0 +1,612 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ICM 8-Max - Mesa Realista con Eliminación</title>
+  <style>
+    body {
+      font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      padding: 10px;
+      text-align: center;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #00f2fe;
+      text-shadow: 0 0 10px #00f2fe;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: rgba(0, 242, 254, 0.7);
+    }
+
+    .controls {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .mode-toggle button,
+    .prize-input input {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .mode-toggle button.active {
+      background-color: #00f2fe;
+      color: #000;
+    }
+
+    .prize-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .poker-table {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      margin: 20px auto;
+      background: url('https://i.postimg.cc/HnsYMHNg/888.png') no-repeat center center;
+      background-size: contain;
+    }
+
+    .player {
+      position: absolute;
+      width: 100px;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      border: 1px solid #00f2fe;
+      text-align: center;
+      color: #fff;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .player-eliminated {
+      opacity: 0.4;
+      filter: grayscale(100%);
+      border-color: #ff0000;
+    }
+    .player-eliminated .player-name {
+      text-decoration: line-through;
+    }
+    .player-eliminated input {
+      opacity: 0.7;
+    }
+
+    .player input {
+      width: 90%;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00f2fe;
+      border-radius: 5px;
+      color: #fff;
+      padding: 4px;
+      text-align: center;
+    }
+
+    .icm-value {
+      font-size: 0.8rem;
+      color: #0f0;
+      margin-top: 4px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      line-height: 16px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .player:hover .close-btn {
+      opacity: 1;
+    }
+    .player-eliminated .close-btn {
+      background: #00f2fe;
+      color: #000;
+      opacity: 1;
+    }
+
+    /* Posiciones sobre la imagen ovalada */
+    .villain-1 { top: 20px; left: 50%; transform: translateX(-50%); }
+    .villain-2 { top: 20%; left: 10px; transform: translateY(-50%); }
+    .villain-4 { top: 45%; left: 10px; transform: translateY(-50%); }
+    .villain-6 { top: 70%; left: 10px; transform: translateY(-50%); }
+    .villain-3 { top: 20%; right: 10px; transform: translateY(-50%); }
+    .villain-5 { top: 45%; right: 10px; transform: translateY(-50%); }
+    .villain-7 { top: 70%; right: 10px; transform: translateY(-50%); }
+    .hero { bottom: 20px; left: 50%; transform: translateX(-50%); }
+
+    .stack-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    .stack-fill {
+      height: 100%;
+      background: #00f2fe;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .player-eliminated .stack-fill {
+      background: #ff0000;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+    .buttons button {
+      background: linear-gradient(135deg, #00f2fe, #008cff);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 30px;
+      font-weight: bold;
+      color: #000;
+      margin: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00f2fe;
+    }
+
+    @media screen and (max-width: 600px) {
+      .player {
+        width: 80px;
+        font-size: 10px;
+      }
+      .player input {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FT <span class="subtitle">2.0</span></h1>
+    
+    <div class="controls">
+      <div class="mode-toggle">
+        
+      </div>
+      
+      <div class="control-group">
+        <label>Recaudado:</label>
+<input 
+  type="number" 
+  id="prize" 
+  value="100" 
+  min="0" 
+  placeholder="$"
+  style="width: 45px; padding: 4px; border-radius: 0px; border: 1px solid rgba(255,255,255,0.2);"
+>
+      </div>
+      
+
+    </div>
+
+    <div class="poker-table chip-mode" id="pokerTable">
+      <!-- Hero (jugador principal) -->
+      <div class="player hero" id="heroContainer">
+        <button class="close-btn" onclick="togglePlayer(0)">×</button>
+        <div class="player-name">HERO</div>
+        <input type="number" id="heroStack" min="0" value="5000">
+        <div class="stack-display" id="heroDisplay">5,000 fichas</div>
+        <div class="stack-bar"><div class="stack-fill" id="heroBar"></div></div>
+        <div class="icm-value" id="heroICM">$0.00</div>
+      </div>
+      
+      <!-- Villanos (7 posiciones) -->
+      <div class="player villain villain-1" id="villain1Container">
+        <button class="close-btn" onclick="togglePlayer(1)">×</button>
+        <div class="player-name">VILLANO 1</div>
+        <input type="number" id="villain1Stack" min="0" value="4000" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain1Bar"></div></div>
+        <div class="icm-value" id="villain1ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-2" id="villain2Container">
+        <button class="close-btn" onclick="togglePlayer(2)">×</button>
+        <div class="player-name">VILLANO 2</div>
+        <input type="number" id="villain2Stack" min="0" value="3500" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain2Bar"></div></div>
+        <div class="icm-value" id="villain2ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-3" id="villain3Container">
+        <button class="close-btn" onclick="togglePlayer(3)">×</button>
+        <div class="player-name">VILLANO 3</div>
+        <input type="number" id="villain3Stack" min="0" value="3000" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain3Bar"></div></div>
+        <div class="icm-value" id="villain3ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-4" id="villain4Container">
+        <button class="close-btn" onclick="togglePlayer(4)">×</button>
+        <div class="player-name">VILLANO 4</div>
+        <input type="number" id="villain4Stack" min="0" value="2500" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain4Bar"></div></div>
+        <div class="icm-value" id="villain4ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-5" id="villain5Container">
+        <button class="close-btn" onclick="togglePlayer(5)">×</button>
+        <div class="player-name">VILLANO 5</div>
+        <input type="number" id="villain5Stack" min="0" value="2000" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain5Bar"></div></div>
+        <div class="icm-value" id="villain5ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-6" id="villain6Container">
+        <button class="close-btn" onclick="togglePlayer(6)">×</button>
+        <div class="player-name">VILLANO 6</div>
+        <input type="number" id="villain6Stack" min="0" value="1500" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain6Bar"></div></div>
+        <div class="icm-value" id="villain6ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-7" id="villain7Container">
+        <button class="close-btn" onclick="togglePlayer(7)">×</button>
+        <div class="player-name">VILLANO 7</div>
+        <input type="number" id="villain7Stack" min="0" value="1000" placeholder="Fichas/BB">
+        <div class="stack-bar"><div class="stack-fill" id="villain7Bar"></div></div>
+        <div class="icm-value" id="villain7ICM">$0.00</div>
+      </div>
+    </div>
+
+  
+  </div>
+
+<script>
+/* -------------------------
+   ICM UNIVERSAL - Integración para UI estética 8-max
+   Pegar este script antes de </body>
+   ------------------------- */
+
+(function(){
+  /* --- Tabla de estructuras (porcentajes) proporcionada por ti --- */
+  function getPrizeStructure(initialPlayers) {
+    if (initialPlayers >= 41 && initialPlayers <= 50) return [0.32, 0.18, 0.125, 0.105, 0.083, 0.073, 0.062, 0.052];
+    if (initialPlayers >= 51 && initialPlayers <= 60) return [0.2889, 0.1685, 0.1175, 0.0982, 0.078, 0.0684, 0.0587, 0.0491];
+    if (initialPlayers >= 61 && initialPlayers <= 75) return [0.2717, 0.1593, 0.1124, 0.0937, 0.075, 0.0647, 0.0553, 0.0459];
+    if (initialPlayers >= 76 && initialPlayers <= 100) return [0.2408, 0.1394, 0.0845, 0.0676, 0.0583, 0.0499, 0.0414, 0.0321];
+    if (initialPlayers >= 101 && initialPlayers <= 125) return [0.2276, 0.1317, 0.0756, 0.0593, 0.0512, 0.0431, 0.0341, 0.0244];
+    if (initialPlayers >= 126 && initialPlayers <= 150) return [0.2131, 0.124, 0.0705, 0.055, 0.0473, 0.0395, 0.0302, 0.0209];
+    if (initialPlayers >= 151 && initialPlayers <= 200) return [0.2051, 0.1196, 0.0684, 0.0532, 0.0456, 0.038, 0.0289, 0.0182];
+    if (initialPlayers >= 201 && initialPlayers <= 250) return [0.1968, 0.1151, 0.0657, 0.0505, 0.0431, 0.0356, 0.0267, 0.0178];
+    if (initialPlayers >= 251 && initialPlayers <= 300) return [0.1898, 0.1095, 0.0642, 0.0496, 0.0416, 0.0343, 0.0263, 0.0175];
+    if (initialPlayers >= 301 && initialPlayers <= 350) return [0.1816, 0.1032, 0.0612, 0.047, 0.0399, 0.0328, 0.0249, 0.0164];
+    if (initialPlayers >= 351 && initialPlayers <= 400) return [0.1743, 0.0976, 0.0592, 0.0453, 0.0383, 0.0314, 0.0237, 0.016];
+    if (initialPlayers >= 401 && initialPlayers <= 500) return [0.1665, 0.0938, 0.0573, 0.0437, 0.0369, 0.03, 0.0225, 0.015];
+    if (initialPlayers >= 501 && initialPlayers <= 600) return [0.1589, 0.0841, 0.0549, 0.0417, 0.0351, 0.0285, 0.0212, 0.0139];
+    if (initialPlayers >= 601 && initialPlayers <= 700) return [0.1525, 0.0811, 0.0532, 0.0402, 0.0337, 0.0273, 0.0201, 0.013];
+    if (initialPlayers >= 701 && initialPlayers <= 800) return [0.1443, 0.0762, 0.0502, 0.0377, 0.0314, 0.0251, 0.0176, 0.013];
+    if (initialPlayers >= 801 && initialPlayers <= 900) return [0.1384, 0.072, 0.0486, 0.0363, 0.0301, 0.024, 0.0178, 0.0111];
+    if (initialPlayers >= 901 && initialPlayers <= 1000) return [0.1334, 0.0688, 0.0479, 0.0358, 0.0297, 0.0237, 0.0176, 0.0109];
+    if (initialPlayers >= 1001 && initialPlayers <= 2000) return [0.1197, 0.0624, 0.0444, 0.0329, 0.0271, 0.0213, 0.0156, 0.0092];
+    if (initialPlayers >= 2001 && initialPlayers <= 3000) return [0.0994, 0.0527, 0.0392, 0.0286, 0.0233, 0.018, 0.0127, 0.0069];
+    return []; // fuera de rango -> vacío
+  }
+
+  /* --- Algoritmo ICM exacto (copiado y adaptado de tu calculadora básica) --- */
+  function calculateICM(stacks, payouts) {
+    const n = stacks.length;
+    const premios = payouts.slice().slice(0); // copia
+    const icmValues = Array(n).fill(0);
+
+    function permute(playersLeft, probSoFar, payoutsLeft) {
+      if (payoutsLeft.length === 0) return;
+
+      const totalStack = playersLeft.reduce((acc, p) => acc + stacks[p], 0);
+      if (totalStack === 0) return;
+
+      for (let i = 0; i < playersLeft.length; i++) {
+        const p = playersLeft[i];
+        const prob = stacks[p] / totalStack;
+        const newProb = probSoFar * prob;
+
+        // Asignar premio actual a este jugador
+        icmValues[p] += newProb * payoutsLeft[0];
+
+        // Continuar con próximos premios y jugadores
+        const newPlayers = playersLeft.slice();
+        newPlayers.splice(i, 1);
+        permute(newPlayers, newProb, payoutsLeft.slice(1));
+      }
+    }
+
+    const active = stacks.map((s, i) => i).filter(i => stacks[i] > 0);
+    permute(active, 1, premios);
+    return icmValues;
+  }
+
+  /* --- Utility: leer stacks desde inputs de la UI y devolver array de números --- */
+  function readStacksFromUI() {
+    // IDs definidos en tu HTML para hero y villanos: heroStack, villain1Stack ... villain7Stack
+    const ids = ['heroStack','villain1Stack','villain2Stack','villain3Stack','villain4Stack','villain5Stack','villain6Stack','villain7Stack'];
+    const stacks = ids.map(id => {
+      const el = document.getElementById(id);
+      if (!el) return 0;
+      const v = parseFloat(el.value);
+      return isNaN(v) ? 0 : v;
+    });
+    return stacks;
+  }
+
+  /* --- Actualiza la UI (ICM y barras) --- */
+  function updateUIWithICM(icmValues, stacks) {
+    const ids = ['hero','villain1','villain2','villain3','villain4','villain5','villain6','villain7'];
+    // Calcular max para barras (usar max entre stacks para que la barra sea proporcional)
+    const maxStack = Math.max(...stacks, 1);
+
+    for (let i = 0; i < ids.length; i++) {
+      const base = ids[i]; // e.g. 'hero'
+      const icmEl = document.getElementById(base + 'ICM');
+      const stackEl = document.getElementById(base + 'Stack') || document.getElementById(base + 'Stack'); // fallback
+      const stackInput = document.getElementById(base + 'Stack') || document.getElementById(base + 'Stack'); // no usado, kept
+      // Display element ids you used: heroDisplay, heroBar, villain1Bar, etc.
+      const displayEl = document.getElementById(base + 'Display') || document.getElementById(base + 'Display');
+      const barEl = document.getElementById(base + 'Bar') || document.getElementById(base.toLowerCase() + 'Bar');
+
+      // Update ICM text
+      if (icmEl) {
+        const v = icmValues[i] || 0;
+        icmEl.textContent = `$${Number(v).toFixed(2)}`;
+      }
+
+      // Update bar width and stack display
+      const stackInputsMap = {
+        hero: 'heroStack',
+        villain1: 'villain1Stack',
+        villain2: 'villain2Stack',
+        villain3: 'villain3Stack',
+        villain4: 'villain4Stack',
+        villain5: 'villain5Stack',
+        villain6: 'villain6Stack',
+        villain7: 'villain7Stack'
+      };
+      const sInput = document.getElementById(stackInputsMap[base]);
+      if (sInput) {
+        const sVal = parseFloat(sInput.value) || 0;
+        // display element naming in your markup: heroDisplay, villainXBar etc.
+        const display = document.getElementById(base + 'Display') || document.getElementById(base + 'Display');
+        if (display) {
+          display.textContent = `${sVal.toLocaleString()} fichas`;
+        }
+        const fill = document.getElementById(base + 'Bar') || document.getElementById((base === 'hero' ? 'heroBar' : base + 'Bar'));
+        if (fill) {
+          const widthPercent = Math.max(0, Math.min(100, (sVal / maxStack) * 100));
+          fill.style.width = widthPercent + '%';
+        }
+      }
+
+      // Add / remove eliminated class visually
+      const container = document.getElementById(base + 'Container');
+      if (container) {
+        const s = stacks[i] || 0;
+        if (s <= 0) {
+          container.classList.add('player-eliminated');
+        } else {
+          container.classList.remove('player-eliminated');
+        }
+      }
+    }
+  }
+
+  /* --- Inserta input "Jugadores iniciales" si no existe --- */
+  function ensureInitialPlayersInput() {
+    if (document.getElementById('initialPlayers')) return;
+    const controls = document.querySelector('.controls');
+    if (!controls) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'control-group';
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.gap = '8px';
+
+    const label = document.createElement('label');
+    label.textContent = 'Player T:';
+    label.style.color = '#fff';
+    label.style.fontSize = '14px';
+
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.id = 'initialPlayers';
+    input.value = 85;
+    input.min = 3;
+    input.style.padding = '8px';
+    input.style.borderRadius = '0px';
+    input.style.border = '1px solid rgba(255,255,255,0.1)';
+    input.style.width = '45px';
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+
+    // Insert after prize input if present
+    const prizeEl = document.getElementById('prize');
+    if (prizeEl && prizeEl.parentElement) {
+      prizeEl.parentElement.insertAdjacentElement('afterend', wrapper);
+    } else {
+      controls.appendChild(wrapper);
+    }
+  }
+
+  /* --- Función principal: leer UI, armar payouts y calcular ICM --- */
+  function runCalculation() {
+    // Leer stacks
+    const stacks = readStacksFromUI(); // length 8
+
+    // Leer prize total
+    const prizeEl = document.getElementById('prize');
+    const prizeTotal = prizeEl ? (parseFloat(prizeEl.value) || 0) : 0;
+
+    // Leer jugadores iniciales
+    const initEl = document.getElementById('initialPlayers');
+    const initialPlayers = initEl ? (parseInt(initEl.value) || 8) : 8;
+
+    // Obtener estructura de porcentajes (8 puestos)
+    const percents = getPrizeStructure(initialPlayers);
+    if (!percents || percents.length === 0) {
+      alert('No hay estructura de premios para la cantidad de jugadores iniciales indicada. Usa 41-3000 o ajusta el valor.');
+      return;
+    }
+
+    // Calcular premios en $ (según prize pool)
+    const prizeMoneyArray = percents.map(p => p * prizeTotal);
+
+    // Contar eliminados (stack === 0)
+    const eliminatedCount = stacks.filter(s => !s || s <= 0).length;
+
+    // Payouts a distribuir = quitar los puestos ocupados ya por eliminados
+    const payoutsToDistribute = prizeMoneyArray.slice(0, Math.max(0, prizeMoneyArray.length - eliminatedCount));
+
+    // Llamar al motor ICM exacto
+    const icmValues = calculateICM(stacks, payoutsToDistribute);
+
+    // Mostrar resultados en UI
+    updateUIWithICM(icmValues, stacks);
+  }
+
+  /* --- Conecta botones y funcionalidades interactivas --- */
+  function attachInteractivity() {
+    ensureInitialPlayersInput();
+
+    // Calcular al click
+    const calcBtn = document.getElementById('calculateBtn');
+    if (calcBtn) {
+      calcBtn.addEventListener('click', function(e){
+        runCalculation();
+      });
+    }
+
+    // Reset: volver a valores por defecto declarados en HTML
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function(){
+        // Restablecer inputs a sus valores por defecto si existen 'value' en HTML
+        const defaultMap = {
+          heroStack: 5000,
+          villain1Stack: 4000,
+          villain2Stack: 3500,
+          villain3Stack: 3000,
+          villain4Stack: 2500,
+          villain5Stack: 2000,
+          villain6Stack: 1500,
+          villain7Stack: 1000,
+          prize: 100,
+          initialPlayers: 85
+        };
+        Object.keys(defaultMap).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = defaultMap[id];
+        });
+        // Recalcular y limpiar estilos eliminados
+        runCalculation();
+      });
+    }
+
+    // Toggle player elimination via close-btn (heredando tu botón ×)
+    for (let i = 0; i <= 7; i++) {
+      const contId = (i === 0 ? 'heroContainer' : `villain${i}Container`);
+      const btn = document.querySelector(`#${contId} .close-btn`);
+      if (!btn) continue;
+      btn.addEventListener('click', (ev) => {
+        // Si el jugador ya está eliminado -> reinstate it to a minimal chip (1) to "revivir"
+        const stackInputId = (i === 0 ? 'heroStack' : `villain${i}Stack`);
+        const stackInput = document.getElementById(stackInputId);
+        const container = document.getElementById(contId);
+        if (!stackInput || !container) return;
+
+        if (container.classList.contains('player-eliminated')) {
+          // Revivir: dejar 1 ficha por defecto (puedes cambiar)
+          stackInput.value = 1;
+          container.classList.remove('player-eliminated');
+        } else {
+          // Eliminar: poner stack a 0
+          stackInput.value = 0;
+          container.classList.add('player-eliminated');
+        }
+        runCalculation();
+      });
+    }
+
+    // Recalcular automáticamente cuando cambien stacks (interactividad live)
+    const stackIds = ['heroStack','villain1Stack','villain2Stack','villain3Stack','villain4Stack','villain5Stack','villain6Stack','villain7Stack'];
+    stackIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        // si el valor es 0, aplicar clase eliminada
+        const idx = stackIds.indexOf(id);
+        const contId = (idx === 0 ? 'heroContainer' : `villain${idx}Container`);
+        const container = document.getElementById(contId);
+        const v = parseFloat(el.value) || 0;
+        if (container) {
+          if (v <= 0) container.classList.add('player-eliminated');
+          else container.classList.remove('player-eliminated');
+        }
+        // recalcular en tiempo real
+        runCalculation();
+      });
+    });
+
+    // También recalcular si cambian prize o initialPlayers
+    const prizeEl = document.getElementById('prize');
+    if (prizeEl) prizeEl.addEventListener('input', runCalculation);
+    const initEl = document.getElementById('initialPlayers');
+    if (initEl) initEl.addEventListener('input', runCalculation);
+  }
+
+  /* --- Inicialización al cargar DOM --- */
+  window.addEventListener('DOMContentLoaded', () => {
+    // Normaliza algunos IDs para que coincidan con los usados en updateUIWithICM
+    // (si ya están bien — perfecto; si no, la función tolera nombres alternativos)
+    attachInteractivity();
+    // Primer cálculo (para mostrar valores iniciales)
+    runCalculation();
+  });
+
+})(); 
+</script>
+
+</body>
+</html>

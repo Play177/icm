@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ICM 8-Max - Mesa Realista con Eliminación</title>
+  <style>
+    body {
+      font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      padding: 10px;
+      text-align: center;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #00f2fe;
+      text-shadow: 0 0 10px #00f2fe;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: rgba(0, 242, 254, 0.7);
+    }
+
+    .controls {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .control-group input {
+      font-family: 'Rajdhani', sans-serif;
+      padding: 8px;
+      border-radius: 0px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      width: 60px;
+      text-align: center;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+    
+    .buttons button {
+      background: linear-gradient(135deg, #00f2fe, #008cff);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 30px;
+      font-weight: bold;
+      color: #000;
+      margin: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00f2fe;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .poker-table {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      margin: 20px auto;
+      background: url('https://i.postimg.cc/HnsYMHNg/888.png') no-repeat center center;
+      background-size: contain;
+    }
+
+    .player {
+      position: absolute;
+      width: 100px;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      border: 1px solid #00f2fe;
+      text-align: center;
+      color: #fff;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .player-eliminated {
+      opacity: 0.4;
+      filter: grayscale(100%);
+      border-color: #ff0000;
+    }
+    .player-eliminated .player-name {
+      text-decoration: line-through;
+    }
+    .player-eliminated input {
+      opacity: 0.7;
+    }
+
+    .player input {
+      width: 90%;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00f2fe;
+      border-radius: 5px;
+      color: #fff;
+      padding: 4px;
+      text-align: center;
+    }
+
+    .icm-value {
+      font-size: 0.8rem;
+      color: #0f0;
+      margin-top: 4px;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 10px;
+      line-height: 16px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .player:hover .close-btn {
+      opacity: 1;
+    }
+    .player-eliminated .close-btn {
+      background: #00f2fe;
+      color: #000;
+      opacity: 1;
+    }
+
+    .stack-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    .stack-fill {
+      height: 100%;
+      background: #00f2fe;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .player-eliminated .stack-fill {
+      background: #ff0000;
+    }
+
+    /* Posiciones sobre la imagen ovalada */
+    .villain-1 { top: 20px; left: 50%; transform: translateX(-50%); }
+    .villain-2 { top: 20%; left: 10px; transform: translateY(-50%); }
+    .villain-4 { top: 45%; left: 10px; transform: translateY(-50%); }
+    .villain-6 { top: 70%; left: 10px; transform: translateY(-50%); }
+    .villain-3 { top: 20%; right: 10px; transform: translateY(-50%); }
+    .villain-5 { top: 45%; right: 10px; transform: translateY(-50%); }
+    .villain-7 { top: 70%; right: 10px; transform: translateY(-50%); }
+    .hero { bottom: 20px; left: 50%; transform: translateX(-50%); }
+
+    @media screen and (max-width: 600px) {
+      .player {
+        width: 80px;
+        font-size: 10px;
+      }
+      .player input {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FT <span class="subtitle">2.0</span></h1>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label>Recaudado:</label>
+        <input type="number" id="prize" value="100" min="0" placeholder="$">
+      </div>
+      
+      <div class="control-group">
+        <label>Player T:</label>
+        <input type="number" id="initialPlayers" value="85" min="3" max="3000">
+      </div>
+    </div>
+
+    <div class="poker-table chip-mode" id="pokerTable">
+      <!-- Hero (jugador principal) -->
+      <div class="player hero" id="heroContainer">
+        <button class="close-btn" onclick="togglePlayer(0)">×</button>
+        <div class="player-name">HERO</div>
+        <input type="number" id="heroStack" min="0" value="5000">
+        <div class="stack-display" id="heroDisplay">5,000 fichas</div>
+        <div class="stack-bar"><div class="stack-fill" id="heroBar"></div></div>
+        <div class="icm-value" id="heroICM">$0.00</div>
+      </div>
+      
+      <!-- Villanos (7 posiciones) -->
+      <div class="player villain villain-1" id="villain1Container">
+        <button class="close-btn" onclick="togglePlayer(1)">×</button>
+        <div class="player-name">VILLANO 1</div>
+        <input type="number" id="villain1Stack" min="0" value="4000">
+        <div class="stack-bar"><div class="stack-fill" id="villain1Bar"></div></div>
+        <div class="icm-value" id="villain1ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-2" id="villain2Container">
+        <button class="close-btn" onclick="togglePlayer(2)">×</button>
+        <div class="player-name">VILLANO 2</div>
+        <input type="number" id="villain2Stack" min="0" value="3500">
+        <div class="stack-bar"><div class="stack-fill" id="villain2Bar"></div></div>
+        <div class="icm-value" id="villain2ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-3" id="villain3Container">
+        <button class="close-btn" onclick="togglePlayer(3)">×</button>
+        <div class="player-name">VILLANO 3</div>
+        <input type="number" id="villain3Stack" min="0" value="3000">
+        <div class="stack-bar"><div class="stack-fill" id="villain3Bar"></div></div>
+        <div class="icm-value" id="villain3ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-4" id="villain4Container">
+        <button class="close-btn" onclick="togglePlayer(4)">×</button>
+        <div class="player-name">VILLANO 4</div>
+        <input type="number" id="villain4Stack" min="0" value="2500">
+        <div class="stack-bar"><div class="stack-fill" id="villain4Bar"></div></div>
+        <div class="icm-value" id="villain4ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-5" id="villain5Container">
+        <button class="close-btn" onclick="togglePlayer(5)">×</button>
+        <div class="player-name">VILLANO 5</div>
+        <input type="number" id="villain5Stack" min="0" value="2000">
+        <div class="stack-bar"><div class="stack-fill" id="villain5Bar"></div></div>
+        <div class="icm-value" id="villain5ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-6" id="villain6Container">
+        <button class="close-btn" onclick="togglePlayer(6)">×</button>
+        <div class="player-name">VILLANO 6</div>
+        <input type="number" id="villain6Stack" min="0" value="1500">
+        <div class="stack-bar"><div class="stack-fill" id="villain6Bar"></div></div>
+        <div class="icm-value" id="villain6ICM">$0.00</div>
+      </div>
+      
+      <div class="player villain villain-7" id="villain7Container">
+        <button class="close-btn" onclick="togglePlayer(7)">×</button>
+        <div class="player-name">VILLANO 7</div>
+        <input type="number" id="villain7Stack" min="0" value="1000">
+        <div class="stack-bar"><div class="stack-fill" id="villain7Bar"></div></div>
+        <div class="icm-value" id="villain7ICM">$0.00</div>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button id="calculateBtn">Calcular ICM</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+<script>
+// ===== ALGORITMO ICM PROFESIONAL =====
+function calculateICM(stacks, prizes) {
+    const n = stacks.length;
+    if (n === 0) return [];
+    
+    const totalStack = stacks.reduce((sum, stack) => sum + stack, 0);
+    if (totalStack === 0) return Array(n).fill(0);
+    
+    const icm = Array(n).fill(0);
+    
+    function recursiveICM(remainingStacks, remainingPrizes, probability) {
+        if (remainingPrizes.length === 0 || remainingStacks.length === 0) return;
+        
+        const currentTotal = remainingStacks.reduce((sum, s) => sum + s, 0);
+        
+        for (let i = 0; i < remainingStacks.length; i++) {
+            const currentProbability = probability * (remainingStacks[i] / currentTotal);
+            const playerIndex = remainingStacks.length > 1 ? 
+                stacks.indexOf(remainingStacks[i]) : 
+                stacks.indexOf(remainingStacks[0]);
+            
+            icm[playerIndex] += currentProbability * remainingPrizes[0];
+            
+            const newStacks = [...remainingStacks];
+            const newPrizes = [...remainingPrizes];
+            newStacks.splice(i, 1);
+            newPrizes.shift();
+            
+            recursiveICM(newStacks, newPrizes, currentProbability);
+        }
+    }
+    
+    recursiveICM([...stacks], [...prizes], 1);
+    return icm;
+}
+
+// ===== ESTRUCTURAS DE PREMIOS PROFESIONALES =====
+function getPrizeStructure(initialPlayers) {
+    const structures = {
+        '41-50': [0.32, 0.18, 0.125, 0.105, 0.083, 0.073, 0.062, 0.052],
+        '51-60': [0.30, 0.175, 0.122, 0.102, 0.081, 0.071, 0.061, 0.051],
+        '61-75': [0.29, 0.17, 0.12, 0.1, 0.08, 0.069, 0.059, 0.049],
+        '76-100': [0.285, 0.165, 0.10, 0.08, 0.069, 0.059, 0.049, 0.038],
+        '101-125': [0.28, 0.162, 0.093, 0.073, 0.063, 0.053, 0.042, 0.03],
+        '126-150': [0.275, 0.16, 0.091, 0.071, 0.061, 0.051, 0.039, 0.027],
+        '151-200': [0.27, 0.1575, 0.09, 0.07, 0.06, 0.05, 0.038, 0.024],
+        '201-250': [0.265, 0.155, 0.0885, 0.068, 0.058, 0.048, 0.036, 0.024],
+        '251-300': [0.26, 0.15, 0.088, 0.068, 0.057, 0.047, 0.036, 0.024],
+        '301-350': [0.255, 0.145, 0.086, 0.066, 0.056, 0.046, 0.035, 0.023],
+        '351-400': [0.25, 0.14, 0.085, 0.065, 0.055, 0.045, 0.034, 0.023],
+        '401-500': [0.245, 0.1375, 0.084, 0.064, 0.054, 0.044, 0.033, 0.022],
+        '501-600': [0.24, 0.127, 0.083, 0.063, 0.053, 0.043, 0.032, 0.021],
+        '601-700': [0.235, 0.125, 0.082, 0.062, 0.052, 0.042, 0.031, 0.02],
+        '701-800': [0.23, 0.1215, 0.08, 0.06, 0.05, 0.04, 0.029, 0.018],
+        '801-900': [0.225, 0.117, 0.079, 0.059, 0.049, 0.039, 0.029, 0.018],
+        '901-1000': [0.22, 0.1135, 0.079, 0.059, 0.049, 0.039, 0.029, 0.018],
+        '1001-1250': [0.215, 0.111, 0.077, 0.057, 0.047, 0.037, 0.027, 0.016],
+        '1251-1500': [0.21, 0.111, 0.077, 0.057, 0.047, 0.037, 0.027, 0.016]
+    };
+
+    for (const [range, percentages] of Object.entries(structures)) {
+        const [min, max] = range.split('-').map(Number);
+        if (initialPlayers >= min && initialPlayers <= max) {
+            return percentages;
+        }
+    }
+    return [0.5, 0.3, 0.2]; // Estructura por defecto
+}
+
+// ===== FUNCIONES DE UI =====
+function readStacksFromUI() {
+    const ids = ['heroStack', 'villain1Stack', 'villain2Stack', 'villain3Stack', 
+                 'villain4Stack', 'villain5Stack', 'villain6Stack', 'villain7Stack'];
+    return ids.map(id => {
+        const el = document.getElementById(id);
+        return el ? Math.max(0, parseFloat(el.value) || 0) : 0;
+    });
+}
+
+function updateUIWithICM(icmValues, stacks) {
+    const playerIds = ['hero', 'villain1', 'villain2', 'villain3', 'villain4', 'villain5', 'villain6', 'villain7'];
+    const maxStack = Math.max(...stacks.filter(s => s > 0), 1);
+
+    playerIds.forEach((playerId, index) => {
+        // Actualizar valores ICM
+        const icmElement = document.getElementById(playerId + 'ICM');
+        if (icmElement) {
+            icmElement.textContent = `$${icmValues[index].toFixed(2)}`;
+        }
+
+        // Actualizar barras de stack
+        const barElement = document.getElementById(playerId + 'Bar');
+        if (barElement) {
+            const stackValue = stacks[index];
+            const widthPercent = stackValue > 0 ? (stackValue / maxStack) * 100 : 0;
+            barElement.style.width = widthPercent + '%';
+        }
+
+        // Actualizar display de fichas
+        const displayElement = document.getElementById(playerId + 'Display');
+        if (displayElement) {
+            displayElement.textContent = `${stacks[index].toLocaleString()} fichas`;
+        }
+
+        // Actualizar estado eliminado
+        const container = document.getElementById(playerId + 'Container');
+        if (container) {
+            if (stacks[index] <= 0) {
+                container.classList.add('player-eliminated');
+            } else {
+                container.classList.remove('player-eliminated');
+            }
+        }
+    });
+}
+
+function runCalculation() {
+    const stacks = readStacksFromUI();
+    const prizeTotal = parseFloat(document.getElementById('prize').value) || 0;
+    const initialPlayers = parseInt(document.getElementById('initialPlayers').value) || 8;
+    
+    const percentages = getPrizeStructure(initialPlayers);
+    const prizeMoneyArray = percentages.map(p => p * prizeTotal);
+    
+    // Filtrar jugadores activos para el cálculo
+    const activeStacks = stacks.filter(stack => stack > 0);
+    const activePrizeMoney = prizeMoneyArray.slice(0, Math.min(prizeMoneyArray.length, activeStacks.length));
+    
+    const icmValues = calculateICM(stacks, activePrizeMoney);
+    updateUIWithICM(icmValues, stacks);
+}
+
+function togglePlayer(index) {
+    const playerIds = ['hero', 'villain1', 'villain2', 'villain3', 'villain4', 'villain5', 'villain6', 'villain7'];
+    const stackId = playerIds[index] + 'Stack';
+    const containerId = playerIds[index] + 'Container';
+    
+    const stackInput = document.getElementById(stackId);
+    const container = document.getElementById(containerId);
+    
+    if (stackInput && container) {
+        if (parseFloat(stackInput.value) > 0) {
+            stackInput.value = 0;
+            container.classList.add('player-eliminated');
+        } else {
+            stackInput.value = index === 0 ? 5000 : 4000 - (index * 500);
+            container.classList.remove('player-eliminated');
+        }
+        runCalculation();
+    }
+}
+
+function resetCalculator() {
+    // Reset stacks
+    document.getElementById('heroStack').value = 5000;
+    document.getElementById('villain1Stack').value = 4000;
+    document.getElementById('villain2Stack').value = 3500;
+    document.getElementById('villain3Stack').value = 3000;
+    document.getElementById('villain4Stack').value = 2500;
+    document.getElementById('villain5Stack').value = 2000;
+    document.getElementById('villain6Stack').value = 1500;
+    document.getElementById('villain7Stack').value = 1000;
+    
+    // Reset otros valores
+    document.getElementById('prize').value = 100;
+    document.getElementById('initialPlayers').value = 85;
+    
+    // Remover estado eliminado
+    const containers = document.querySelectorAll('.player');
+    containers.forEach(container => {
+        container.classList.remove('player-eliminated');
+    });
+    
+    runCalculation();
+}
+
+// ===== INICIALIZACIÓN =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar event listeners
+    document.getElementById('calculateBtn').addEventListener('click', runCalculation);
+    document.getElementById('resetBtn').addEventListener('click', resetCalculator);
+    
+    // Recalcular automáticamente cuando cambien los inputs
+    const allInputs = document.querySelectorAll('input[type="number"]');
+    allInputs.forEach(input => {
+        input.addEventListener('input', runCalculation);
+    });
+    
+    // Cálculo inicial
+    runCalculation();
+});
+</script>
+</body>
+</html>

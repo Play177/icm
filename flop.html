@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora PLO5 Equity</title>
+</head>
+<body>
+    <h1>Calculadora PLO5 Equity</h1>
+
+    <form id="equityForm">
+        <h3>Jugador 1 (5 cartas)</h3>
+        <input type="text" id="p1" placeholder="Ah Kh Qh Jh Th"><br>
+
+        <h3>Jugador 2 (5 cartas)</h3>
+        <input type="text" id="p2" placeholder="Ac Ad As 2c 3c"><br>
+
+        <h3>Flop (3 cartas)</h3>
+        <input type="text" id="board" placeholder="9h 8h 7h"><br><br>
+
+        <button type="submit">Calcular Equity</button>
+    </form>
+
+    <h2>Resultado:</h2>
+    <pre id="resultado"></pre>
+
+    <script>
+        const form = document.getElementById("equityForm");
+        const resultado = document.getElementById("resultado");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Tomar los valores y separarlos en arrays
+            const player1 = document.getElementById("p1").value.trim().split(/\s+/);
+            const player2 = document.getElementById("p2").value.trim().split(/\s+/);
+            const board   = document.getElementById("board").value.trim().split(/\s+/);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/calculate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ player1, player2, board })
+                });
+
+                const data = await response.json();
+                resultado.textContent = JSON.stringify(data, null, 2);
+
+            } catch (err) {
+                resultado.textContent = "Error: " + err;
+            }
+        });
+    </script>
+</body>
+</html>

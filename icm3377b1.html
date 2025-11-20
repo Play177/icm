@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -84,7 +84,7 @@
       position: relative;
       width: 100%;
       max-width: 900px;
-      height: 600px;
+      height: 81%;
       margin: 20px auto;
       background: url('https://i.postimg.cc/HnsYMHNg/888.png') no-repeat center center;
       background-size: contain;
@@ -187,7 +187,7 @@
     .villain-3 { top: 20%; right: 10px; transform: translateY(-50%); }
     .villain-5 { top: 45%; right: 10px; transform: translateY(-50%); }
     .villain-7 { top: 70%; right: 10px; transform: translateY(-50%); }
-    .hero { bottom: 80px; left: 50%; transform: translateX(-50%); }
+    .hero { bottom: 20px; left: 50%; transform: translateX(-50%); }
 
     @media screen and (max-width: 600px) {
       .player {
@@ -202,7 +202,7 @@
 </head>
 <body>
   <div class="container">
-    
+    <h1>FT <span class="subtitle">2.0</span></h1>
     
     <div class="controls">
       <div class="control-group">
@@ -352,6 +352,7 @@ function getPrizeStructure(initialPlayers) {
         '1251-1500': [0.21, 0.111, 0.077, 0.057, 0.047, 0.037, 0.027, 0.016]
     };
 
+
     for (const [range, percentages] of Object.entries(structures)) {
         const [min, max] = range.split('-').map(Number);
         if (initialPlayers >= min && initialPlayers <= max) {
@@ -485,7 +486,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
-
 </html>
-
-

@@ -511,9 +511,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+    // ===== SELECCIÓN AUTOMÁTICA EN MÓVILES =====
+function setupMobileSelection() {
+    const inputs = document.querySelectorAll('input[type="number"]');
+    
+    inputs.forEach(input => {
+        // Seleccionar todo el texto cuando recibe foco
+        input.addEventListener('focus', function() {
+            this.select();
+        });
+        
+        // Para iOS/Safari - asegurar selección
+        input.addEventListener('click', function() {
+            this.select();
+        });
+    });
+}
+
+// Agregar esto a tu inicialización existente
+document.addEventListener('DOMContentLoaded', function() {
+    // ... tu código existente ...
+    
+    // 🔥 NUEVO: Selección automática en móviles
+    setupMobileSelection();
+});
 </script>
 </body>
 </html>
+
 
 
 

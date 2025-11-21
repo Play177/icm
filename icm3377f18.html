@@ -124,6 +124,15 @@
       color: #fff;
       padding: 4px;
       text-align: center;
+      font-size: 16px; /* Previene zoom en iOS */
+    }
+
+    /* Mejorar usabilidad en móviles */
+    input[type="number"]:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: #00f2fe;
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        outline: none;
     }
 
     .icm-value {
@@ -195,14 +204,15 @@
         font-size: 10px;
       }
       .player input {
-        font-size: 10px;
+        font-size: 16px; /* Más grande en móviles */
+        padding: 8px 4px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
- <h3>ICM <span class="subtitle">PLO5</span></h3>
+    <h3>ICM <span class="subtitle">PLO5</span></h3>
     
     <div class="controls">
       <div class="control-group">
@@ -239,7 +249,7 @@
       <div class="player villain villain-2" id="villain2Container">
         <button class="close-btn" onclick="togglePlayer(2)">×</button>
         <div class="player-name">VILLANO 2</div>
-        <input type="number" id="villain2Stack" tabindex="3"  min="0" value="3500">
+        <input type="number" id="villain2Stack" tabindex="3" min="0" value="3500">
         <div class="stack-bar"><div class="stack-fill" id="villain2Bar"></div></div>
         <div class="icm-value" id="villain2ICM">$0.00</div>
       </div>
@@ -271,7 +281,7 @@
       <div class="player villain villain-6" id="villain6Container">
         <button class="close-btn" onclick="togglePlayer(6)">×</button>
         <div class="player-name">VILLANO 6</div>
-         <input type="number" id="villain6Stack" tabindex="7" min="0" value="1800">
+        <input type="number" id="villain6Stack" tabindex="7" min="0" value="1800">
         <div class="stack-bar"><div class="stack-fill" id="villain6Bar"></div></div>
         <div class="icm-value" id="villain6ICM">$0.00</div>
       </div>
@@ -279,7 +289,7 @@
       <div class="player villain villain-7" id="villain7Container">
         <button class="close-btn" onclick="togglePlayer(7)">×</button>
         <div class="player-name">VILLANO 7</div>
-        <input type="number" id="villain7Stack" tabindex="0" min="0" value="1000">
+        <input type="number" id="villain7Stack" tabindex="8" min="0" value="1000"> <!-- CORREGIDO: tabindex="8" -->
         <div class="stack-bar"><div class="stack-fill" id="villain7Bar"></div></div>
         <div class="icm-value" id="villain7ICM">$0.00</div>
       </div>
@@ -292,39 +302,63 @@
   </div>
 
 <script>
-// ===== ALGORITMO ICM PROFESIONAL =====
+// ===== ALGORITMO ICM PROFESIONAL CORREGIDO =====
 function calculateICM(stacks, prizes) {
     const n = stacks.length;
-    if (n === 0) return [];
+    if (n === 0) return Array(n).fill(0);
     
     const totalStack = stacks.reduce((sum, stack) => sum + stack, 0);
     if (totalStack === 0) return Array(n).fill(0);
     
     const icm = Array(n).fill(0);
     
-    function recursiveICM(remainingStacks, remainingPrizes, probability) {
-        if (remainingPrizes.length === 0 || remainingStacks.length === 0) return;
+    function recursiveICM(currentStacks, currentPrizes, probability, originalIndices) {
+        if (currentPrizes.length === 0 || currentStacks.length === 0) return;
         
-        const currentTotal = remainingStacks.reduce((sum, s) => sum + s, 0);
+        const currentTotal = currentStacks.reduce((sum, s) => sum + s, 0);
+        if (currentTotal === 0) return;
         
-        for (let i = 0; i < remainingStacks.length; i++) {
-            const currentProbability = probability * (remainingStacks[i] / currentTotal);
-            const playerIndex = remainingStacks.length > 1 ? 
-                stacks.indexOf(remainingStacks[i]) : 
-                stacks.indexOf(remainingStacks[0]);
+        for (let i = 0; i < currentStacks.length; i++) {
+            const stack = currentStacks[i];
+            if (stack <= 0) continue;
             
-            icm[playerIndex] += currentProbability * remainingPrizes[0];
+            const currentProbability = probability * (stack / currentTotal);
+            const playerOriginalIndex = originalIndices[i];
             
-            const newStacks = [...remainingStacks];
-            const newPrizes = [...remainingPrizes];
+            // Asignar el primer premio disponible
+            icm[playerOriginalIndex] += currentProbability * currentPrizes[0];
+            
+            // Preparar para la siguiente recursión
+            const newStacks = [...currentStacks];
+            const newIndices = [...originalIndices];
+            const newPrizes = currentPrizes.slice(1);
+            
             newStacks.splice(i, 1);
-            newPrizes.shift();
+            newIndices.splice(i, 1);
             
-            recursiveICM(newStacks, newPrizes, currentProbability);
+            // Solo continuar si quedan premios por repartir
+            if (newPrizes.length > 0) {
+                recursiveICM(newStacks, newPrizes, currentProbability, newIndices);
+            }
         }
     }
     
-    recursiveICM([...stacks], [...prizes], 1);
+    // Filtrar solo jugadores con fichas > 0 para el cálculo
+    const activeStacks = [];
+    const activeIndices = [];
+    
+    for (let i = 0; i < stacks.length; i++) {
+        if (stacks[i] > 0) {
+            activeStacks.push(stacks[i]);
+            activeIndices.push(i);
+        }
+    }
+    
+    // Si no hay jugadores activos, retornar ceros
+    if (activeStacks.length === 0) return icm;
+    
+    // Calcular ICM solo con jugadores activos
+    recursiveICM(activeStacks, prizes, 1, activeIndices);
     return icm;
 }
 
@@ -358,7 +392,7 @@ function getPrizeStructure(initialPlayers) {
             return percentages;
         }
     }
-    return [0.5, 0.3, 0.2]; // Estructura por defecto
+    return [0.5, 0.3, 0.2];
 }
 
 // ===== FUNCIONES DE UI =====
@@ -376,13 +410,11 @@ function updateUIWithICM(icmValues, stacks) {
     const maxStack = Math.max(...stacks.filter(s => s > 0), 1);
 
     playerIds.forEach((playerId, index) => {
-        // Actualizar valores ICM
         const icmElement = document.getElementById(playerId + 'ICM');
         if (icmElement) {
             icmElement.textContent = `$${icmValues[index].toFixed(2)}`;
         }
 
-        // Actualizar barras de stack
         const barElement = document.getElementById(playerId + 'Bar');
         if (barElement) {
             const stackValue = stacks[index];
@@ -390,13 +422,11 @@ function updateUIWithICM(icmValues, stacks) {
             barElement.style.width = widthPercent + '%';
         }
 
-        // Actualizar display de fichas
         const displayElement = document.getElementById(playerId + 'Display');
         if (displayElement) {
             displayElement.textContent = `${stacks[index].toLocaleString()} fichas`;
         }
 
-        // Actualizar estado eliminado
         const container = document.getElementById(playerId + 'Container');
         if (container) {
             if (stacks[index] <= 0) {
@@ -416,7 +446,6 @@ function runCalculation() {
     const percentages = getPrizeStructure(initialPlayers);
     const prizeMoneyArray = percentages.map(p => p * prizeTotal);
     
-    // Filtrar jugadores activos para el cálculo
     const activeStacks = stacks.filter(stack => stack > 0);
     const activePrizeMoney = prizeMoneyArray.slice(0, Math.min(prizeMoneyArray.length, activeStacks.length));
     
@@ -445,7 +474,6 @@ function togglePlayer(index) {
 }
 
 function resetCalculator() {
-    // Reset stacks
     document.getElementById('heroStack').value = 5000;
     document.getElementById('villain1Stack').value = 4000;
     document.getElementById('villain2Stack').value = 3500;
@@ -455,17 +483,41 @@ function resetCalculator() {
     document.getElementById('villain6Stack').value = 1500;
     document.getElementById('villain7Stack').value = 1000;
     
-    // Reset otros valores
     document.getElementById('prize').value = 100;
     document.getElementById('initialPlayers').value = 85;
     
-    // Remover estado eliminado
     const containers = document.querySelectorAll('.player');
     containers.forEach(container => {
         container.classList.remove('player-eliminated');
     });
     
     runCalculation();
+}
+
+// ===== NAVEGACIÓN PERFECTA CON TAB Y ENTER =====
+function setupPerfectNavigation() {
+    const inputs = document.querySelectorAll('input[type="number"]');
+    
+    inputs.forEach((input, index) => {
+        // Selección automática al enfocar
+        input.addEventListener('focus', function() {
+            setTimeout(() => this.select(), 50);
+        });
+        
+        // Navegación con Enter
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const allInputs = Array.from(inputs);
+                const currentIndex = allInputs.indexOf(this);
+                const nextIndex = (currentIndex + 1) % allInputs.length;
+                allInputs[nextIndex].focus();
+            }
+        });
+        
+        // Para móviles
+        input.setAttribute('enterkeyhint', 'next');
+    });
 }
 
 // ===== INICIALIZACIÓN =====
@@ -480,69 +532,12 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('input', runCalculation);
     });
     
+    // Configurar navegación perfecta
+    setupPerfectNavigation();
+    
     // Cálculo inicial
     runCalculation();
 });
 </script>
-  <script>
-/* Salta al siguiente campo cuando el usuario
-   - escriba la longitud máxima, o
-   - pulse “Enter” / “Next” en el teclado virtual   */
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');          // <-- ajusta el selector
-  if (!form) return;
-
-  const inputs = [...form.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"]')];
-
-  inputs.forEach((inp, idx) => {
-    /* 1) Salto por LONGITUD máxima */
-    inp.addEventListener('input', () => {
-      if (inp.value.length >= inp.maxLength && inputs[idx + 1]) {
-        inputs[idx + 1].focus();
-      }
-    });
-
-    /* 2) Salto por tecla “Enter” (código 13) o “Next” (código 9) */
-    inp.addEventListener('keydown', e => {
-      if ((e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 9) && inputs[idx + 1]) {
-        e.preventDefault();          // evita enviar el form
-        inputs[idx + 1].focus();
-      }
-    });
-  });
-});
-    // ===== SELECCIÓN AUTOMÁTICA EN MÓVILES =====
-function setupMobileSelection() {
-    const inputs = document.querySelectorAll('input[type="number"]');
-    
-    inputs.forEach(input => {
-        // Seleccionar todo el texto cuando recibe foco
-        input.addEventListener('focus', function() {
-            this.select();
-        });
-        
-        // Para iOS/Safari - asegurar selección
-        input.addEventListener('click', function() {
-            this.select();
-        });
-    });
-}
-
-// Agregar esto a tu inicialización existente
-document.addEventListener('DOMContentLoaded', function() {
-    // ... tu código existente ...
-    
-    // 🔥 NUEVO: Selección automática en móviles
-    setupMobileSelection();
-});
-</script>
 </body>
 </html>
-
-
-
-
-
-
-
-

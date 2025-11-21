@@ -219,9 +219,9 @@
     <div class="poker-table chip-mode" id="pokerTable">
       <!-- Hero (jugador principal) -->
       <div class="player hero" id="heroContainer">
-        <button class="close-btn" onclick="togglePlayer(1)">×</button>
+        <button class="close-btn" onclick="togglePlayer(0)">×</button>
         <div class="player-name">HERO</div>
-        <input type="number" id="heroStack" min="0" value="5000">
+        <input type="number" id="heroStack" tabindex="1" min="0" value="5000">
         <div class="stack-display" id="heroDisplay">5,000 fichas</div>
         <div class="stack-bar"><div class="stack-fill" id="heroBar"></div></div>
         <div class="icm-value" id="heroICM">$0.00</div>
@@ -229,9 +229,9 @@
       
       <!-- Villanos (7 posiciones) -->
       <div class="player villain villain-1" id="villain1Container">
-        <button class="close-btn" onclick="togglePlayer(2)">×</button>
+        <button class="close-btn" onclick="togglePlayer(1)">×</button>
         <div class="player-name">VILLANO 1</div>
-        <input type="number" id="villain1Stack" min="0" value="4000">
+        <input type="number" id="villain1Stack" tabindex="2" min="0" value="4000">
         <div class="stack-bar"><div class="stack-fill" id="villain1Bar"></div></div>
         <div class="icm-value" id="villain1ICM">$0.00</div>
       </div>
@@ -239,7 +239,7 @@
       <div class="player villain villain-2" id="villain2Container">
         <button class="close-btn" onclick="togglePlayer(3)">×</button>
         <div class="player-name">VILLANO 2</div>
-        <input type="number" id="villain2Stack" min="0" value="3500">
+        <input type="number" id="villain2Stack" tabindex="3"  min="0" value="3500">
         <div class="stack-bar"><div class="stack-fill" id="villain2Bar"></div></div>
         <div class="icm-value" id="villain2ICM">$0.00</div>
       </div>
@@ -247,7 +247,7 @@
       <div class="player villain villain-3" id="villain3Container">
         <button class="close-btn" onclick="togglePlayer(4)">×</button>
         <div class="player-name">VILLANO 3</div>
-        <input type="number" id="villain3Stack" min="0" value="3000">
+        <input type="number" id="villain3Stack" tabindex="4" min="0" value="3000">
         <div class="stack-bar"><div class="stack-fill" id="villain3Bar"></div></div>
         <div class="icm-value" id="villain3ICM">$0.00</div>
       </div>
@@ -514,4 +514,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 

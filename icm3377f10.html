@@ -473,23 +473,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar event listeners
     document.getElementById('calculateBtn').addEventListener('click', runCalculation);
     document.getElementById('resetBtn').addEventListener('click', resetCalculator);
-  document.addEventListener('DOMContentLoaded', function() {
-    // Configurar event listeners existentes
-    document.getElementById('calculateBtn').addEventListener('click', runCalculation);
-    document.getElementById('resetBtn').addEventListener('click', resetCalculator);
-    
-    // Recalcular automáticamente cuando cambien los inputs
-    const allInputs = document.querySelectorAll('input[type="number"]');
-    allInputs.forEach(input => {
-        input.addEventListener('input', runCalculation);
-    });
-    
-    // 🔥 NUEVO: Configurar navegación con teclado
-    setupKeyboardNavigation();
-    
-    // Cálculo inicial
-    runCalculation();
-});
     
     // Recalcular automáticamente cuando cambien los inputs
     const allInputs = document.querySelectorAll('input[type="number"]');
@@ -501,65 +484,33 @@ document.addEventListener('DOMContentLoaded', function() {
     runCalculation();
 });
 </script>
+  <script>
+/* Salta al siguiente campo cuando el usuario
+   - escriba la longitud máxima, o
+   - pulse “Enter” / “Next” en el teclado virtual   */
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');          // <-- ajusta el selector
+  if (!form) return;
 
-    // ===== NAVEGACIÓN CON TAB Y FLECHAS =====
-function setupKeyboardNavigation() {
-    const inputIds = [
-        'heroStack', 'villain1Stack', 'villain2Stack', 'villain3Stack', 
-        'villain4Stack', 'villain5Stack', 'villain6Stack', 'villain7Stack',
-        'prize', 'initialPlayers'
-    ];
-    
-    const inputs = inputIds.map(id => document.getElementById(id));
-    
-    inputs.forEach((input, index) => {
-        if (!input) return;
-        
-        // Navegación con TAB
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const nextIndex = (index + 1) % inputs.length;
-                inputs[nextIndex].focus();
-                inputs[nextIndex].select(); // Selecciona el texto para sobrescribir fácil
-            }
-        });
-        
-        // Navegación con ENTER y FLECHAS (para móviles y desktop)
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                const nextIndex = (index + 1) % inputs.length;
-                inputs[nextIndex].focus();
-                inputs[nextIndex].select();
-            }
-            
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                e.preventDefault();
-                const prevIndex = (index - 1 + inputs.length) % inputs.length;
-                inputs[prevIndex].focus();
-                inputs[prevIndex].select();
-            }
-        });
-        
-        // Para móviles: agregar botón "Siguiente" en teclado virtual
-        input.setAttribute('enterkeyhint', 'next');
+  const inputs = [...form.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"]')];
+
+  inputs.forEach((inp, idx) => {
+    /* 1) Salto por LONGITUD máxima */
+    inp.addEventListener('input', () => {
+      if (inp.value.length >= inp.maxLength && inputs[idx + 1]) {
+        inputs[idx + 1].focus();
+      }
     });
-}
+
+    /* 2) Salto por tecla “Enter” (código 13) o “Next” (código 9) */
+    inp.addEventListener('keydown', e => {
+      if ((e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 9) && inputs[idx + 1]) {
+        e.preventDefault();          // evita enviar el form
+        inputs[idx + 1].focus();
+      }
+    });
+  });
+});
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

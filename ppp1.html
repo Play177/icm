@@ -1,0 +1,713 @@
+﻿
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Fichas Poker Brasil | Compra Segura en 3 Pasos</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111;
+  --surface-light: #1a1a1a;
+  --primary: #00f5d4;
+  --primary-dark: #00c4a7;
+  --text: #e4e4e4;
+  --muted: #666;
+  --success: #00d26a;
+  --warning: #ffb224;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,.4);
+  --transition: .35s cubic-bezier(.3,0,0,1);
+  --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 2rem 1rem 4rem;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(0,245,212,.06) 0%, transparent 25%),
+    radial-gradient(circle at 85% 85%, rgba(0,245,212,.06) 0%, transparent 25%);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 480px;
+  width: 100%;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  animation: fadeInUp .8s ease;
+}
+
+header i {
+  font-size: 2.8rem;
+  color: var(--primary);
+  margin-bottom: .5rem;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: .25rem;
+}
+
+header p {
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.05);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp .8s ease .2s backwards;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient);
+}
+
+.card h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.qr {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.qr img {
+  width: 180px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0,245,212,.25);
+  transition: transform var(--transition);
+}
+
+.qr img:hover {
+  transform: scale(1.03);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.05);
+  animation: fadeInUp .6s backwards;
+  transition: transform var(--transition);
+}
+
+.step:hover {
+  transform: translateY(-3px);
+}
+
+.step:nth-child(2) {
+  animation-delay: .15s;
+}
+
+.step:nth-child(3) {
+  animation-delay: .3s;
+}
+
+.step i {
+  font-size: 1.4rem;
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: .15rem;
+}
+
+.step div {
+  flex: 1;
+}
+
+.step h4 {
+  color: var(--primary);
+  margin-bottom: .5rem;
+  font-size: 1.1rem;
+}
+
+.step p {
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: var(--gradient);
+  color: #000;
+  box-shadow: 0 4px 20px rgba(0,245,212,.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0,245,212,.45);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(0,245,212,.08);
+}
+
+.btn-success {
+  background: var(--success);
+  color: #000;
+  box-shadow: 0 4px 20px rgba(0,210,106,.35);
+}
+
+.btn-success:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0,210,106,.45);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 20px rgba(0,245,212,.4);
+  transition: transform var(--transition);
+  z-index: 5;
+  animation: pulse 2s infinite;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(4px);
+  z-index: 20;
+  animation: fadeIn .3s ease;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.95);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: var(--shadow);
+  transition: transform var(--transition);
+  animation: modalIn .3s ease .1s backwards;
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal.show .modal-content {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+  color: var(--primary);
+  font-size: 1.3rem;
+}
+
+.close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.close:hover {
+  color: var(--text);
+}
+
+.upload-area {
+  border: 2px dashed var(--muted);
+  border-radius: var(--radius-sm);
+  padding: 2rem 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.upload-area:hover, .upload-area.dragover {
+  border-color: var(--primary);
+  background: rgba(0,245,212,.03);
+}
+
+.upload-area i {
+  font-size: 2.5rem;
+  color: var(--muted);
+  margin-bottom: .5rem;
+  transition: color var(--transition);
+}
+
+.upload-area:hover i, .upload-area.dragover i {
+  color: var(--primary);
+}
+
+.upload-text {
+  color: var(--muted);
+  margin-bottom: .5rem;
+}
+
+.upload-subtext {
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+#preview {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  display: none;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+.progress {
+  height: 6px;
+  background: rgba(255,255,255,.1);
+  border-radius: 3px;
+  margin: 1rem 0;
+  overflow: hidden;
+  display: none;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--gradient);
+  width: 0%;
+  transition: width .5s ease;
+}
+
+.status {
+  padding: .75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  display: none;
+  align-items: center;
+  gap: .5rem;
+  font-size: .9rem;
+}
+
+.status.success {
+  background: rgba(0,210,106,.1);
+  color: var(--success);
+  border: 1px solid rgba(0,210,106,.2);
+}
+
+.status.error {
+  background: rgba(255,50,50,.1);
+  color: #ff3232;
+  border: 1px solid rgba(255,50,50,.2);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0,245,212,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(0,245,212,0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,245,212,0); }
+}
+
+footer {
+  margin-top: 2.5rem;
+  font-size: .75rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  body {
+    padding: 1.5rem 1rem 3rem;
+  }
+  
+  header h1 {
+    font-size: 1.9rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .step {
+    padding: 1.25rem;
+  }
+  
+  .fab {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <i class="fa-solid fa-poker-chip"></i>
+    <h1>Fichas Poker Brasil</h1>
+    <p>Compra segura en 3 pasos</p>
+  </header>
+
+  <section class="card">
+    <h3><i class="fa-solid fa-qrcode"></i> Pago con PIX</h3>
+    <div class="qr">
+      <!-- Reemplaza esta URL con tu código PIX real -->
+      <img id="qrImg" src="https://i.ibb.co/xS1Q3hp3/p9.png">
+    </div>
+    <p style="text-align:center;font-size:.85rem;color:var(--muted)">Escanea el código PIX para realizar el pago</p>
+  </section>
+
+  <div class="steps">
+    <div class="step">
+      <i class="fa-solid fa-user-check"></i>
+      <div>
+        <h4>Paso 1 – Registro</h4>
+        <p>Creá tu cuenta y verificá tu identidad en segundos.</p>
+      </div>
+    </div>
+    <div class="step">
+      <i class="fa-solid fa-arrow-right-arrow-left"></i>
+      <div>
+        <h4>Paso 2 – Conversión</h4>
+        <p>Transferí desde tu banco (ARS) → BRL al mejor tipo de cambio.</p>
+      </div>
+    </div>
+    <div class="step">
+      <i class="fa-solid fa-paper-plane"></i>
+      <div>
+        <h4>Paso 3 – Comprobante</h4>
+        <p>Pagá al club y envianos el ticket para cargar tus fichas</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="card" style="margin-bottom: 4.5rem;">
+    <button class="btn btn-primary" id="btnPago">
+      <i class="fa-solid fa-credit-card"></i> Iniciar proceso de pago
+    </button>
+    <button class="btn btn-secondary" style="margin-top: .75rem;" id="btnWapp">
+      <i class="fa-brands fa-whatsapp"></i> Enviar comprobante
+    </button>
+    <p style="text-align:center;font-size:.75rem;color:var(--muted);margin-top:.75rem">
+      Procesado de forma segura por nuestro socio Global66
+    </p>
+  </section>
+</div>
+
+<!-- Modal pago -->
+<div class="modal" id="modalPago">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-external-link-alt"></i> Redireccionando...</h3>
+      <button class="close" data-close>&times;</button>
+    </div>
+    <p>Serás redirigido a nuestro parcero para completar tu pago de forma segura.</p>
+    <p style="margin-top: .5rem; font-size: .9rem; color: var(--muted)">Una vez completado el pago, vuelve aquí para enviar tu comprobante.</p>
+    <a href="https://share.global66.com/LEOBER1233" target="_blank" class="btn btn-primary" style="margin-top: 1.5rem;">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> Continuar
+    </a>
+  </div>
+</div>
+
+<!-- Modal comprobante -->
+<div class="modal" id="modalComp">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-file-upload"></i> Enviar comprobante</h3>
+      <button class="close" data-close>&times;</button>
+    </div>
+    
+    <div class="status" id="uploadStatus"></div>
+    
+    <div class="upload-area" id="uploadArea">
+      <i class="fa-solid fa-cloud-upload-alt"></i>
+      <div class="upload-text">Haz clic o arrastra tu comprobante aquí</div>
+      <div class="upload-subtext">Formatos: JPG, PNG (máx. 5MB)</div>
+    </div>
+    
+    <input type="file" id="comprobante" accept="image/*" style="display:none">
+    <img id="preview">
+    
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div style="display:flex;gap:.75rem;margin-top:1rem">
+      <button class="btn btn-secondary" id="shareBtn" style="flex:1" disabled>
+        <i class="fa-solid fa-share-nodes"></i> Guardar
+      </button>
+      <a class="btn btn-success" id="sendWapp" style="flex:2" disabled>
+        <i class="fa-brands fa-whatsapp"></i> Enviar al club
+      </a>
+    </div>
+  </div>
+</div>
+
+<a class="fab" id="fabWapp" href="https://wa.me/559180103393?text=Hola,%20quiero%20cargar%20fichas%20al%20club" target="_blank">
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+
+<footer>© 2025 FichasPokerLatam | Intermediario oficial del club</footer>
+
+<script>
+// Elementos DOM
+const modalP = document.getElementById('modalPago');
+const modalC = document.getElementById('modalComp');
+const fileInput = document.getElementById('comprobante');
+const preview = document.getElementById('preview');
+const shareBtn = document.getElementById('shareBtn');
+const wappBtn = document.getElementById('sendWapp');
+const uploadArea = document.getElementById('uploadArea');
+const progress = document.querySelector('.progress');
+const progressBar = document.getElementById('progressBar');
+const uploadStatus = document.getElementById('uploadStatus');
+
+// Abrir modales
+document.getElementById('btnPago').addEventListener('click', () => modalP.classList.add('show'));
+document.getElementById('btnWapp').addEventListener('click', () => modalC.classList.add('show'));
+
+// Cerrar modales
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.modal').classList.remove('show');
+  });
+});
+
+// Cerrar modal al hacer clic fuera
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+    }
+  });
+});
+
+// Gestión de archivos
+uploadArea.addEventListener('click', () => fileInput.click());
+
+// Arrastrar y soltar
+uploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+  uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  
+  if (e.dataTransfer.files.length) {
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
+
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length) {
+    handleFile(e.target.files[0]);
+  }
+});
+
+function handleFile(file) {
+  // Validaciones
+  if (!file.type.match('image.*')) {
+    showStatus('Por favor, sube una imagen (JPG, PNG)', 'error');
+    return;
+  }
+  
+  if (file.size > 5 * 1024 * 1024) {
+    showStatus('La imagen es demasiado grande (máx. 5MB)', 'error');
+    return;
+  }
+  
+  // Simular progreso de carga
+  progress.style.display = 'block';
+  let progressValue = 0;
+  const progressInterval = setInterval(() => {
+    progressValue += 5;
+    progressBar.style.width = `${progressValue}%`;
+    
+    if (progressValue >= 100) {
+      clearInterval(progressInterval);
+      progress.style.display = 'none';
+      
+      // Mostrar vista previa
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        uploadArea.style.display = 'none';
+        
+        // Habilitar botones
+        shareBtn.disabled = false;
+        wappBtn.disabled = false;
+        
+        // Actualizar enlace de WhatsApp
+        const message = encodeURIComponent('Hola, ya realicé el pago de fichas. Adjunto comprobante.');
+        wappBtn.href = `https://wa.me/559180103393?text=${message}`;
+        
+        showStatus('Comprobante cargado correctamente', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+  }, 50);
+}
+
+// Compartir/guardar comprobante
+shareBtn.addEventListener('click', async () => {
+  if (!fileInput.files[0]) return;
+  
+  const file = fileInput.files[0];
+  
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Comprobante de pago',
+        text: 'Comprobante de pago de fichas'
+      });
+    } catch (err) {
+      console.log('Error al compartir:', err);
+      downloadFile(file);
+    }
+  } else {
+    downloadFile(file);
+  }
+});
+
+function downloadFile(file) {
+  const url = URL.createObjectURL(file);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'comprobante-fichas.jpg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Mostrar estado
+function showStatus(message, type) {
+  uploadStatus.textContent = message;
+  uploadStatus.className = `status ${type}`;
+  uploadStatus.style.display = 'flex';
+  
+  setTimeout(() => {
+    uploadStatus.style.display = 'none';
+  }, 5000);
+}
+</script>
+</body>
+</html>

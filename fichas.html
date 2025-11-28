@@ -1,0 +1,337 @@
+﻿
+<html>
+<head>
+<title>Tablas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=320, target-densitydpi=device-dpi">
+<style>	
+/* ESTILOS PRINCIPALES DEL IFRAME NEON */
+.iframe-neon {
+    width: 99%;
+    height:99%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: auto;
+    border: none;
+    border-radius: 9px;
+    background: linear-gradient(145deg, #FFD700, #FF8C00, #FF1493);
+    padding: 4px;
+    box-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.7),
+        0 0 20px rgba(255, 140, 0, 0.5),
+        0 0 30px rgba(255, 20, 147, 0.3),
+        inset 0 0 15px rgba(255, 255, 255, 0.1);
+    animation: neon-glow 2.5s ease-in-out infinite alternate;
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.iframe-neon:hover {
+    animation-duration: 1s;
+    box-shadow: 
+        0 0 15px rgba(255, 215, 0, 0.9),
+        0 0 25px rgba(255, 140, 0, 0.7),
+        0 0 35px rgba(255, 20, 147, 0.5),
+        0 0 45px rgba(255, 20, 147, 0.2),
+        inset 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+@keyframes neon-glow {
+    from {
+        box-shadow: 
+            0 0 10px rgba(255, 215, 0, 0.7),
+            0 0 20px rgba(255, 140, 0, 0.5),
+            0 0 30px rgba(255, 20, 147, 0.3),
+            inset 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+    to {
+        box-shadow: 
+            0 0 15px rgba(255, 215, 0, 0.9),
+            0 0 25px rgba(255, 140, 0, 0.7),
+            0 0 35px rgba(255, 20, 147, 0.5),
+            0 0 45px rgba(255, 20, 147, 0.2),
+            inset 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* ============================= */
+/* ESTILOS DEL MODAL DE MARKETING */
+/* ============================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.modal-description {
+    margin-bottom: 25px;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.modal-video-locked {
+    font-size: 48px;
+    margin: 20px 0;
+    color: #FF1493;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.modal-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    min-width: 160px;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #FF8C00, #FF1493);
+    color: white;
+}
+
+.btn-secondary {
+    background: #333;
+    color: #FFD700;
+    border: 1px solid #FFD700;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+/* Botones principales de modo */
+.mode-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.mode-btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: #0e1626;
+    border: 2px solid #213042;
+    color: #8aa0b6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 120px;
+}
+
+.mode-btn.active {
+    background: rgba(76, 201, 240, 0.1);
+    border-color: #4cc9f0;
+    color: #4cc9f0;
+}
+
+.mode-btn:hover:not(.active) {
+    background: #1a2438;
+    border-color: #4cc9f0;
+    color: #4cc9f0;
+}
+
+/* TUS ESTILOS EXISTENTES */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    padding-bottom: 70px;
+    background-color: #000;
+    color: #fff;
+}
+
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background-color: #000;
+    border-top: 2px solid #FFD700;
+    padding: 12px 0;
+    box-shadow: 0 -2px 5px rgba(255, 215, 0, 0.2);
+    z-index: 1000;
+}
+
+.footer-nav a button {
+    background-color: #FFD700;
+
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.footer-nav a button:hover {
+    background-color: #000;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+}
+
+/* TUS MEDIA QUERIES ORIGINALES */
+@media only screen and (max-width: 660px) { 
+    /* Mantén todos tus media queries originales aquí */
+    table[class=w0], td[class=w0] { width: 0 !important; }
+    /* ... resto de tus media queries ... */
+}
+</style>
+</head>
+<body>
+
+<!-- BOTONES DE MODO -->
+<table class="default" width="100%">
+  <tr>
+    <td><div class="mode-selector"><button class="mode-btn" onclick="openPremiumModal('KO')">Basic KO</button></div></td>
+    <td><div class="mode-selector"><button class="mode-btn  active" onclick="openPremiumModal('FT')">FT 2.0</button></div></td>
+    <td><div class="mode-selector"><button class="mode-btn" onclick="openPremiumModal('PKO')">PKO!</button></div></td>
+  </tr>
+</table>
+
+<!-- MODAL DE MARKETING -->
+<div id="videoModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title" id="modalTitle">🚀 Entrenamiento PREMIUM</h2>
+        <p class="modal-description" id="modalDescription">Contenido exclusivo disponible para miembros PRO.</p>
+        
+        <div class="modal-video-locked" id="videoLocked">🔒</div>
+        <iframe id="videoFrame" width="100%" height="0" style="display: none;" frameborder="0" allow="autoplay"></iframe>
+        
+        <div class="modal-actions">
+            <button class="modal-btn btn-primary" onclick="redirectToSales()">¡Quiero ser PRO!</button>
+            <button class="modal-btn btn-secondary" onclick="closeVideoModal()">Quizás después</button>
+        </div>
+    </div>
+</div>
+
+<!-- IFRAME PRINCIPAL -->
+<iframe
+    title="Mil8"
+    width="99%"
+    scrolling="yes"
+    src="https://play177.github.io/icm/ppp1.html"
+    class="iframe-neon">
+</iframe>
+
+<!-- BOTONERA INFERIOR -->
+<div class="footer-nav">
+  <a href="bio.html">
+    <button>Inicio</button>
+  </a>
+  <a href="index.html">
+    <button>Visor</button>
+  </a>
+  <a href="carta11aa.html">
+    <button>Curso!</button>
+  </a>
+</div>
+
+<script>
+// =============================
+// FUNCIONES DE MARKETING - SIMPLIFICADAS
+// =============================
+
+// Función principal para abrir el modal
+function openPremiumModal(mode) {
+    console.log('Abriendo modal para:', mode); // Para debug
+    
+    const positionNames = {
+        'KO': 'Kill Order Basic',
+        'FT': 'Final Table 2.0', 
+        'PREMIUM': 'Contra Ataque PREMIUM'
+    };
+    
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const videoModal = document.getElementById("videoModal");
+    
+    // Actualizar contenido del modal
+    modalTitle.textContent = `🚀 ${positionNames[mode]} - PREMIUM`;
+    modalDescription.textContent = `Esta estrategia avanzada "${positionNames[mode]}" está disponible en nuestro Pack Poker PRO con análisis GTO, simulaciones y mentoría personalizada.`;
+    
+    // Mostrar modal
+    videoModal.classList.add("active");
+    console.log('Modal debería estar visible ahora');
+}
+
+// Función para redirigir a la página de ventas
+function redirectToSales() {
+    window.open('https://intellipoker.github.io/leopoker/carta11aa.html', '_blank');
+    closeVideoModal();
+}
+
+// Función para cerrar el modal
+function closeVideoModal() {
+    const videoModal = document.getElementById("videoModal");
+    videoModal.classList.remove("active");
+}
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('videoModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeVideoModal();
+    }
+});
+
+// Cerrar modal con ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeVideoModal();
+    }
+});
+
+// Debug: Verificar que todo cargó
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página cargada - modal listo');
+    console.log('Botones configurados');
+});
+</script>
+</body>
+</html>

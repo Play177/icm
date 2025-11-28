@@ -1,0 +1,330 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fichas Poker Brasil - Compra Segura de Fichas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #111;
+      --accent: #00f5d4;
+      --accent-dark: #00c4a7;
+      --text: #e0e0e0;
+      --subtle: #555;
+      --gradient: linear-gradient(135deg, #00f5d4 0%, #00c4a7 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 245, 212, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 245, 212, 0.05) 0%, transparent 20%);
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    header p {
+      color: var(--subtle);
+      font-size: 1.1rem;
+    }
+
+    .qr-section {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qr-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient);
+    }
+
+    .qr-section h2 {
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-size: 1.3rem;
+    }
+
+    .qr {
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .qr img {
+      width: 200px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 245, 212, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .qr img:hover {
+      transform: scale(1.03);
+    }
+
+    .qr-caption {
+      color: var(--subtle);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .step {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .step:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .step-number {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--gradient);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border-bottom-left-radius: 12px;
+    }
+
+    .step h3 {
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step h3 i {
+      font-size: 1.1rem;
+    }
+
+    .step p {
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .step strong {
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .btn {
+      background: var(--gradient);
+      color: #000;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 245, 212, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 245, 212, 0.4);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: rgba(0, 245, 212, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 245, 212, 0.2);
+    }
+
+    .global-info {
+      margin-top: 1.5rem;
+      text-align: center;
+      color: var(--subtle);
+      font-size: 0.85rem;
+    }
+
+    .global-info a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: var(--subtle);
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step, .qr-section, .actions {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .step:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .step:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .step {
+        padding: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-poker-chips"></i>
+      </div>
+      <h1>Fichas Poker Brasil</h1>
+      <p>Compra segura de fichas en 3 pasos simples</p>
+    </header>
+
+    <section class="qr-section">
+      <h2><i class="fas fa-qrcode"></i> Acceso Rápido</h2>
+      <div class="qr">
+        <img src="https://i.ibb.co/xS1Q3hp3/p9.png" />
+      </div>
+      <p class="qr-caption">Escanea para acceder directamente</p>
+    </section>
+
+    <section class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3><i class="fas fa-user-check"></i> Registro</h3>
+        <p>Regístrate en nuestra plataforma de pagos y verifica tu identidad de forma segura.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3><i class="fas fa-exchange-alt"></i> Conversión</h3>
+        <p>Transfiere desde tu banco local (ARS, PEN o COP) y convierte a BRL al mejor tipo de cambio.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3><i class="fas fa-paper-plane"></i> Confirmación</h3>
+        <p>Realiza el pago al club y envía el comprobante para activar tus fichas inmediatamente.</p>
+      </div>
+    </section>
+
+    <div class="actions">
+      <a class="btn" href="https://share.global66.com/LEOBER1233" target="_blank">
+        <i class="fas fa-credit-card"></i> Iniciar Proceso de Pago
+      </a>
+      <a class="btn secondary" href="https://wa.me/559180103393?text=Hola,%20ya%20realicé%20el%20pago%20de%20fichas.%20Adjunto%20comprobante." target="_blank">
+        <i class="fab fa-whatsapp"></i> Enviar Comprobante
+      </a>
+    </div>
+
+    <div class="global-info">
+      Procesado de forma segura a través de nuestro socio <a href="https://share.global66.com/LEOBER1233" target="_blank">Global66</a>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 FichasPokerLatam | Intermediario oficial del club
+  </footer>
+
+</body>
+</html>

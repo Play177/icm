@@ -1,4 +1,3 @@
-﻿
 <!doctype html>
 <html lang="es">
 <head>
@@ -455,14 +454,14 @@ footer {
   <header>
     <i class="fa-solid fa-poker-chip"></i>
     <h1>Fichas Poker Brasil</h1>
-    <p>Compra segura en 3 pasos</p>
+    <p>Compra segura de fichas en 3 pasos simples</p>
   </header>
 
   <section class="card">
     <h3><i class="fa-solid fa-qrcode"></i> Pago con PIX</h3>
     <div class="qr">
       <!-- Reemplaza esta URL con tu código PIX real -->
-      <img id="qrImg" src="https://i.ibb.co/svqvZdKn/jp777.jpg">
+      <img id="qrImg" src="https://i.ibb.co/svqvZdKn/jp777.jpg" alt="QR PIX">
     </div>
     <p style="text-align:center;font-size:.85rem;color:var(--muted)">Escanea el código PIX para realizar el pago</p>
   </section>
@@ -479,14 +478,14 @@ footer {
       <i class="fa-solid fa-arrow-right-arrow-left"></i>
       <div>
         <h4>Paso 2 – Conversión</h4>
-        <p>Transferí desde tu banco (ARS) → BRL al mejor tipo de cambio.</p>
+        <p>Transferí desde tu banco (ARS, PEN, COP) → BRL al mejor tipo de cambio.</p>
       </div>
     </div>
     <div class="step">
       <i class="fa-solid fa-paper-plane"></i>
       <div>
         <h4>Paso 3 – Comprobante</h4>
-        <p>Pagá al club y envianos el ticket para cargar tus fichas</p>
+        <p>Pagá al club y envianos el ticket para cargar tus fichas inmediatamente.</p>
       </div>
     </div>
   </div>
@@ -546,14 +545,14 @@ footer {
       <button class="btn btn-secondary" id="shareBtn" style="flex:1" disabled>
         <i class="fa-solid fa-share-nodes"></i> Guardar
       </button>
-      <a class="btn btn-success" id="sendWapp" style="flex:2" disabled>
+      <button class="btn btn-success" id="sendWapp" style="flex:2" disabled>
         <i class="fa-brands fa-whatsapp"></i> Enviar al club
-      </a>
+      </button>
     </div>
   </div>
 </div>
 
-<a class="fab" id="fabWapp" href="https://wa.me/559180103393?text=Hola,%20quiero%20cargar%20fichas%20al%20club" target="_blank">
+<a class="fab" id="fabWapp" href="https://wa.me/559180103393?text=Hola,%20quiero%20cargar%20fichas%20al%20club" target="_blank" onclick="openWhatsApp(event)">
   <i class="fa-brands fa-whatsapp"></i>
 </a>
 
@@ -571,6 +570,27 @@ const uploadArea = document.getElementById('uploadArea');
 const progress = document.querySelector('.progress');
 const progressBar = document.getElementById('progressBar');
 const uploadStatus = document.getElementById('uploadStatus');
+
+// Función para abrir WhatsApp desde iframe
+function openWhatsApp(event) {
+  event.preventDefault();
+  const url = event.currentTarget.href;
+  
+  // Intentar abrir en una nueva pestaña
+  const newWindow = window.open(url, '_blank');
+  
+  // Si falla (por restricciones del iframe), usar un enfoque alternativo
+  if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+    // Crear un enlace temporal fuera del iframe
+    const tempLink = document.createElement('a');
+    tempLink.href = url;
+    tempLink.target = '_blank';
+    tempLink.rel = 'noopener noreferrer';
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
+  }
+}
 
 // Abrir modales
 document.getElementById('btnPago').addEventListener('click', () => modalP.classList.add('show'));
@@ -654,16 +674,21 @@ function handleFile(file) {
         shareBtn.disabled = false;
         wappBtn.disabled = false;
         
-        // Actualizar enlace de WhatsApp
-        const message = encodeURIComponent('Hola, ya realicé el pago de fichas. Adjunto comprobante.');
-        wappBtn.href = `https://wa.me/559180103393?text=${message}`;
-        
         showStatus('Comprobante cargado correctamente', 'success');
       };
       reader.readAsDataURL(file);
     }
   }, 50);
 }
+
+// Enviar a WhatsApp
+wappBtn.addEventListener('click', function() {
+  const message = encodeURIComponent('Hola, ya realicé el pago de fichas. Adjunto comprobante.');
+  const whatsappUrl = `https://wa.me/559180103393?text=${message}`;
+  
+  // Usar la misma función para abrir WhatsApp
+  openWhatsApp({ preventDefault: () => {}, currentTarget: { href: whatsappUrl } });
+});
 
 // Compartir/guardar comprobante
 shareBtn.addEventListener('click', async () => {
@@ -710,6 +735,4 @@ function showStatus(message, type) {
 }
 </script>
 </body>
-
 </html>
-

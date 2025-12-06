@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NLH Defense Trainer - BB vs BTN</title>
+    <title>NLH Defense Trainer - FREE BB vs BTN</title>
     <style>
         :root {
             --bg: #0b0f14;
@@ -13,7 +13,6 @@
             --accent: #4cc9f0;
             --call: #60a5fa;
             --fold: #f87171;
-            --raise: #fbbf24;
             --3bet: #fbbf24;
             --good: #2dd4bf;
             --bad: #f87171;
@@ -37,75 +36,61 @@
         }
         
         .container {
-            width: 100%;
-            max-width: 477px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 0 20px;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             padding-bottom: 15px;
             border-bottom: 1px solid #1f2937;
         }
         
         .header h1 {
-            font-size: 26px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 15px;
             color: var(--accent);
         }
         
         .header .subtitle {
             color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 15px;
+            margin-bottom: 20px;
         }
         
         .position-selector {
             display: flex;
             gap: 8px;
             justify-content: center;
-            margin: 15px 0 5px 0;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         
         .pos-btn {
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
             background: #0e1626;
             border: 1px solid #213042;
             color: var(--muted);
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 13px;
-            font-weight: 600;
-            min-width: 60px;
-            letter-spacing: 0.5px;
+            font-size: 14px;
+            font-weight: bold;
+            min-width: 70px;
         }
         
         .pos-btn.active {
-            background: rgba(76, 201, 240, 0.15);
+            background: rgba(76, 201, 240, 0.1);
             border-color: var(--accent);
             color: var(--accent);
-            box-shadow: 0 0 15px rgba(76, 201, 240, 0.2);
         }
         
         .pos-btn:hover:not(.active) {
             background: #1a2438;
             border-color: var(--accent);
             color: var(--accent);
-            transform: translateY(-1px);
-        }
-        
-        .range-info {
-            background: rgba(76, 201, 240, 0.08);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin: 15px 0;
-            font-size: 13px;
-            line-height: 1.4;
         }
         
         .quiz-card {
@@ -113,114 +98,38 @@
             border: 1px solid #1f2937;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            padding: 25px;
+            padding: 30px;
             margin-bottom: 20px;
             text-align: center;
-            width: 100%;
         }
         
-        .stats-display {
-            display: flex;
-            justify-content: space-around;
-            margin: 0 0 20px 0;
-            padding: 18px 15px;
-            background: #0e1626;
-            border-radius: 12px;
-            border: 1px solid #213042;
-        }
-        
-        .stat-box {
+        .score-display {
             text-align: center;
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .stat-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--accent);
-            line-height: 1;
-        }
-        
-        .stat-label {
-            font-size: 12px;
+            margin: 20px 0;
+            font-size: 16px;
             color: var(--muted);
-            margin-top: 4px;
-            opacity: 0.8;
         }
         
         .hand-display {
-            margin: 20px 0;
-            padding: 22px;
+            font-size: 24px;
+            margin: 30px 0;
+            padding: 20px;
             background: #0e1626;
             border-radius: 12px;
             border: 1px solid #213042;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            min-height: 110px;
+            letter-spacing: 2px;
         }
         
-        .card-chip {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 75px;
-            height: 105px;
-            border-radius: 10px;
-            background: linear-gradient(145deg, #1a2232, #0e1626);
-            border: 2px solid #2a3b52;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s ease;
-        }
-        
-        .card-chip:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-        
-        .card-chip b {
-            font-size: 24px;
-        }
-        
-        .s { color: #60a5fa; }
-        .h { color: #fb7185; }
-        .d { color: #f59e0b; }
-        .c { color: #34d399; }
-        
-        .hand-notation {
-            margin-top: 12px;
-            font-size: 20px;
-            color: var(--accent);
-            font-weight: bold;
-        }
-        
-        .hand-type {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 4px;
-            opacity: 0.8;
-        }
-        
-        /* BOTONERA OPTIMIZADA */
-        .decision-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 25px 0;
-            width: 100%;
-        }
-        
-        .button-row {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            width: 100%;
-        }
+.decision-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 30px 0;
+}
+
         
         .decision-btn {
-            padding: 18px 12px;
+            padding: 18px 25px;
             border-radius: 12px;
             border: 2px solid;
             font-size: 16px;
@@ -228,9 +137,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             flex: 1;
-            min-width: 0;
-            text-align: center;
-            letter-spacing: 0.5px;
+            min-width: 100px;
         }
         
         .btn-fold {
@@ -245,45 +152,25 @@
             color: var(--call);
         }
         
-        .btn-3bet {
-            background: rgba(251, 191, 36, 0.15);
-            border-color: var(--3bet);
-            color: var(--3bet);
-            font-size: 17px;
-            padding: 20px 12px;
-            font-weight: 700;
-        }
-        
+.btn-3bet {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: var(--3bet);
+    color: var(--3bet);
+    grid-column: 1 / 3;   
+}
+
         .decision-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn-fold:hover {
-            background: rgba(248, 113, 113, 0.2);
-        }
-        
-        .btn-call:hover {
-            background: rgba(96, 165, 250, 0.2);
-        }
-        
-        .btn-3bet:hover {
-            background: rgba(251, 191, 36, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         .feedback {
-            margin: 20px 0;
-            padding: 22px;
+            margin: 25px 0;
+            padding: 20px;
             border-radius: 12px;
             font-size: 18px;
+            font-weight: bold;
             display: none;
-            text-align: center;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .feedback.correct {
@@ -301,81 +188,48 @@
         }
         
         .next-btn {
-            padding: 16px 32px;
+            padding: 18px 35px;
             border-radius: 12px;
             border: 2px solid var(--accent);
             background: rgba(76, 201, 240, 0.1);
             color: var(--accent);
             cursor: pointer;
             transition: all 0.15s ease;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             margin: 10px auto;
             display: none;
-            width: 180px;
-            letter-spacing: 0.5px;
+            width: 200px;
         }
         
         .next-btn:hover {
             background: rgba(76, 201, 240, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.2);
         }
         
-        .range-breakdown {
-            display: flex;
-            justify-content: space-between;
-            margin: 15px 0 25px 0;
-            padding: 15px;
-            background: #0e1626;
-            border-radius: 10px;
-            border: 1px solid #213042;
-        }
-        
-        .range-item {
-            text-align: center;
-            flex: 1;
-            padding: 0 8px;
-        }
-        
-        .range-percent {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        
-        .fold-percent { color: var(--fold); }
-        .call-percent { color: var(--call); }
-        .bet3-percent { color: var(--3bet); }
-        
-        .range-label {
-            font-size: 12px;
-            color: var(--muted);
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .footer {
-            margin-top: 25px;
-            text-align: center;
-            color: #8aa0b6;
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-        
-        .action-explanation {
-            margin-top: 15px;
-            padding: 18px;
-            background: #0e1626;
+        .card-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 85px;
             border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.5;
-            text-align: left;
-            border-left: 4px solid var(--accent);
+            background: #0a0f17;
+            border: 1px solid #22324a;
+            margin: 0 3px;
+            position: relative;
         }
         
-        /* MODAL ESTILOS */
+        .card-chip b {
+            font-size: 18px;
+        }
+        
+        .s { color: #60a5fa; }
+        .h { color: #fb7185; }
+        .d { color: #f59e0b; }
+        .c { color: #34d399; }
+        
+        /* Modal */
         .video-modal {
             position: fixed;
             inset: 0;
@@ -386,8 +240,7 @@
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            transition: all 0.3s;
         }
         
         .video-modal.active {
@@ -397,168 +250,69 @@
         
         .modal-content {
             background: #121826;
-            padding: 25px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 10px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
             border: 1px solid #2a3b52;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            animation: modalSlideIn 0.3s ease;
-        }
-        
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
         .close-modal {
             float: right;
-            font-size: 24px;
+            font-size: 1.5rem;
             cursor: pointer;
             color: #8aa0b6;
-            transition: color 0.2s;
-            line-height: 1;
         }
         
         .close-modal:hover {
             color: #4cc9f0;
         }
         
-        #modalTitle {
-            color: var(--accent);
-            margin: 15px 0 10px 0;
-            font-size: 22px;
-        }
-        
-        #modalDescription {
-            color: var(--muted);
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        
         iframe {
             width: 100%;
-            height: 280px;
+            height: 315px;
             border: none;
-            border-radius: 8px;
             display: none;
         }
         
         .video-locked {
-            padding: 25px 20px;
-            border: 2px dashed var(--accent);
+            padding: 20px;
+            border: 2px dashed #4cc9f0;
             border-radius: 8px;
-            color: var(--muted);
-            margin: 15px 0;
+            color: #8aa0b6;
         }
         
         .buy-btn {
             margin-top: 15px;
-            padding: 12px 25px;
+            padding: 10px 18px;
             background: linear-gradient(45deg, #ffd700, #ffb700);
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            color: #000;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
         
-        .buy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #8aa0b6;
+            font-size: 0.9rem;
         }
         
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
-            .container {
-                padding: 0 15px;
-            }
-            
-            .quiz-card {
-                padding: 20px;
-            }
-            
-            .card-chip {
-                width: 65px;
-                height: 90px;
-            }
-            
-            .card-chip b {
-                font-size: 20px;
-            }
-            
-            .hand-display {
-                padding: 18px;
-                gap: 10px;
-                min-height: 100px;
-            }
-            
-            .hand-notation {
+
+            .decision-btn {
+                padding: 20px 15px;
                 font-size: 18px;
             }
             
-            .decision-btn {
-                padding: 16px 8px;
-                font-size: 15px;
+            .card-chip {
+                width: 50px;
+                height: 70px;
             }
             
-            .btn-3bet {
-                padding: 18px 8px;
+            .card-chip b {
                 font-size: 16px;
-            }
-            
-            .stats-display {
-                padding: 15px 10px;
-            }
-            
-            .stat-value {
-                font-size: 20px;
-            }
-            
-            .stat-label {
-                font-size: 11px;
-            }
-            
-            .range-breakdown {
-                padding: 12px;
-                margin: 10px 0 20px 0;
-            }
-            
-            .range-percent {
-                font-size: 16px;
-            }
-            
-            .range-label {
-                font-size: 11px;
-            }
-            
-            .pos-btn {
-                padding: 8px 12px;
-                font-size: 12px;
-                min-width: 55px;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .decision-buttons {
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 12px;
-            }
-            
-            .button-row {
-                display: contents;
-            }
-            
-            .btn-3bet {
-                grid-column: span 1;
             }
         }
     </style>
@@ -566,7 +320,8 @@
 <body>
     <div class="container">
         <div class="header">
-           
+            <h1>🎯 NLH Defense Trainer</h1>
+            <div class="subtitle">BB vs BTN - Entrenamiento Gratis</div>
             
             <div class="position-selector">
                 <button class="pos-btn" onclick="redirectToPremium('UTG')">UTG</button>
@@ -575,38 +330,18 @@
                 <button class="pos-btn active" onclick="selectPosition('BU')">BU</button>
                 <button class="pos-btn" onclick="redirectToPremium('SB')">SB</button>
             </div>
-            
-           
+        </div>
         
         <div class="quiz-card">
-            <div class="stats-display">
-                <div class="stat-box">
-                    <div class="stat-value" id="currentScore">0</div>
-                    <div class="stat-label">Puntuación</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="accuracy">0%</div>
-                    <div class="stat-label">Precisión</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="handsPlayed">0</div>
-                    <div class="stat-label">Manos</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="currentStreak">0</div>
-                    <div class="stat-label">Racha</div>
-                </div>
-            </div>
+            <div class="score-display" id="scoreDisplay">Aciertos: 0/0 (0%)</div>
             
             <div class="hand-display" id="handDisplay">
-                <!-- Cartas se generarán aquí -->
+                <!-- Las cartas se mostrarán aquí -->
             </div>
             
             <div class="decision-buttons" id="decisionButtons">
-                <div class="button-row">
-                    <button class="decision-btn btn-fold" onclick="checkDecision('FOLD')">FOLD</button>
-                    <button class="decision-btn btn-call" onclick="checkDecision('CALL')">CALL</button>
-                </div>
+                <button class="decision-btn btn-fold" onclick="checkDecision('FOLD')">FOLD</button>
+                <button class="decision-btn btn-call" onclick="checkDecision('CALL')">CALL</button>
                 <button class="decision-btn btn-3bet" onclick="checkDecision('3BET')">3-BET</button>
             </div>
             
@@ -614,30 +349,15 @@
                 <!-- Feedback se mostrará aquí -->
             </div>
             
-            <button class="next-btn" id="nextBtn" onclick="nextHand()">Siguiente →</button>
-        </div>
-        
-        <div class="range-breakdown">
-            <div class="range-item">
-                <div class="range-percent fold-percent" id="foldPercent">50.2%</div>
-                <div class="range-label">FOLD</div>
-            </div>
-            <div class="range-item">
-                <div class="range-percent call-percent" id="callPercent">35.8%</div>
-                <div class="range-label">CALL</div>
-            </div>
-            <div class="range-item">
-                <div class="range-percent bet3-percent" id="betPercent">14.0%</div>
-                <div class="range-label">3-BET</div>
-            </div>
+            <button class="next-btn" id="nextBtn" onclick="nextHand()">Siguiente Mano</button>
         </div>
         
         <div class="footer">
-            Entrenador de NLH | BB vs BTN | v1.0
+            Entrenador Gratis BB vs BTN | Para más posiciones obtén el Pack PRO
         </div>
     </div>
-    
-    <!-- Modal Premium -->
+
+    <!-- Modal -->
     <div class="video-modal" id="videoModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeVideoModal()">&times;</span>
@@ -645,367 +365,283 @@
             <p id="modalDescription"></p>
             <iframe id="videoFrame"></iframe>
             <div class="video-locked" id="videoLocked" style="display:none;">
-                <p>Este entrenador premium está disponible en nuestro <strong>Pack Poker PRO</strong></p>
-                <button class="buy-btn" onclick="window.open('https://intellipoker.github.io/leopoker/carta11aa.html','_blank')">
-                    📦 Obtener Pack PRO
-                </button>
+                <p>Este entrenador está disponible en nuestro <strong>Pack Poker PRO</strong> (con Derechos de Reventa)</p>
+                <button class="buy-btn" onclick="window.open('https://intellipoker.github.io/leopoker/carta11aa.html','_blank')">📦 Obtener Pack Poker PRO</button>
             </div>
         </div>
     </div>
+
+<script>
+// =============================
+// NLH DEFENSE TRAINER - SUPER SIMPLIFICADO
+// =============================
+
+// TUS RANGOS PERSONALES SIMPLIFICADOS
+const RANGOS = {
+    '3BET': [
+        '88', '99', 'TT', 'JJ', 'QQ', 'KK', 'AA',
+        'A5s', 'A4s', 'ATs', 'AJs', 'AQs', 'AKs',
+        'KJs', 'KQs', 'K6s',
+        'QJs', 'QTs', 'Q9s',
+        'JTs', 'J9s',
+        'AQo', 'AKo',
+        'KQo'
+    ],
     
-    <script>
-    // =============================
-    // NLH DEFENSE TRAINER - BB vs BTN
-    // =============================
-    
-    // TUS RANGOS PERSONALES
-    const RANGOS_BB_vs_BTN = {
-        '3BET': [
-            '88', '99', 'TT', 'JJ', 'QQ', 'KK', 'AA',
-            'A5s', 'A4s', 'ATs', 'AJs', 'AQs', 'AKs',
-            'KJs', 'KQs', 'K6s',
-            'QJs', 'QTs', 'Q9s',
-            'JTs', 'J9s',
-            'AQo', 'AKo',
-            'KQo'
-        ],
-        
-        'CALL': [
-            '22', '33', '44', '55', '66', '77',
-            'A2s', 'A3s', 'A9s', 'A8s', 'A7s', 'A6s',
-            'K2s', 'K3s', 'K4s', 'K5s', 'K6s', 'K7s', 'K8s', 'K9s', 'KTs',
-            'Q2s', 'Q3s', 'Q4s', 'Q5s', 'Q6s', 'Q7s', 'Q8s', 'Q9s', 'QTs', 'QJs',
-            'J3s', 'J4s', 'J5s', 'J6s', 'J7s', 'J8s', 'J9s', 'JTs',
-            'T4s', 'T5s', 'T6s', 'T7s', 'T8s', 'T9s',
-            '95s', 'T5s', 'J5s', 'Q5s', 'K5s', 'A5s',
-            '84s', '94s', 'T4s', 'J4s', 'Q4s', 'K4s', 'A4s',
-            '74s', '84s', '94s', 'T4s', 'J4s', 'Q4s', 'K4s', 'A4s',
-            '63s', '73s', '83s', '93s', 'T3s', 'J3s', 'Q3s', 'K3s', 'A3s',
-            '53s', '63s', '73s', '83s', '93s', 'T3s', 'J3s', 'Q3s', 'K3s', 'A3s',
-            '43s',
-            'A2o', 'A3o', 'A4o', 'A5o', 'A6o', 'A7o',
-            'K4o', 'K5o', 'K6o', 'K7o', 'K8o', 'K9o', 'KTo',
-            'Q8o', 'Q9o', 'QTo', 'QJo', 'QKo',
-            'J8o', 'J9o', 'JTo', 'JQo', 'JKo',
-            'T8o', 'T9o', 'TJo', 'TQo', 'TKo',
-            '97o', 'T7o', 'J7o', 'Q7o', 'K7o', 'A7o',
-            '87o', '76o'
-        ]
+    'CALL': [
+        '22', '33', '44', '55', '66', '77',
+        'A2s', 'A3s', 'A9s', 'A8s', 'A7s', 'A6s',
+        'K2s', 'K3s', 'K4s', 'K5s', 'K6s', 'K7s', 'K8s', 'K9s', 'KTs',
+        'Q2s', 'Q3s', 'Q4s', 'Q5s', 'Q6s', 'Q7s', 'Q8s', 'Q9s', 'QTs', 'QJs',
+        'J3s', 'J4s', 'J5s', 'J6s', 'J7s', 'J8s', 'J9s', 'JTs',
+        'T4s', 'T5s', 'T6s', 'T7s', 'T8s', 'T9s',
+        '95s', 'T5s', 'J5s', 'Q5s', 'K5s', 'A5s',
+        '84s', '94s', 'T4s', 'J4s', 'Q4s', 'K4s', 'A4s',
+        '74s', '84s', '94s', 'T4s', 'J4s', 'Q4s', 'K4s', 'A4s',
+        '63s', '73s', '83s', '93s', 'T3s', 'J3s', 'Q3s', 'K3s', 'A3s',
+        '53s', '63s', '73s', '83s', '93s', 'T3s', 'J3s', 'Q3s', 'K3s', 'A3s',
+        '43s',
+        'A2o', 'A3o', 'A4o', 'A5o', 'A6o', 'A7o',
+        'K4o', 'K5o', 'K6o', 'K7o', 'K8o', 'K9o', 'KTo',
+        'Q8o', 'Q9o', 'QTo', 'QJo', 'QKo',
+        'J8o', 'J9o', 'JTo', 'JQo', 'JKo',
+        'T8o', 'T9o', 'TJo', 'TQo', 'TKo',
+        '97o', 'T7o', 'J7o', 'Q7o', 'K7o', 'A7o',
+        '87o', '76o'
+    ]
+};
+
+// Variables globales
+let currentHand = '';
+let score = { correct: 0, total: 0 };
+
+// Cache para búsqueda rápida
+let rangeCache = {
+    '3BET': new Set(),
+    'CALL': new Set()
+};
+
+// =============================
+// FUNCIONES DE MARKETING
+// =============================
+
+const videoModal = document.getElementById("videoModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalDescription = document.getElementById("modalDescription");
+const videoFrame = document.getElementById("videoFrame");
+const videoLocked = document.getElementById("videoLocked");
+
+function redirectToPremium(position) {
+    const positionNames = {
+        'UTG': 'Under The Gun',
+        'MP': 'Middle Position', 
+        'CO': 'Cutoff',
+        'SB': 'Small Blind'
     };
     
-    // Variables globales
-    let currentHand = '';
-    let stats = {
-        correct: 0,
-        total: 0,
-        currentStreak: 0,
-        bestStreak: 0
-    };
+    modalTitle.textContent = `🚀 Entrenador ${positionNames[position]} - PREMIUM`;
+    modalDescription.textContent = `La defensa desde ${positionNames[position]} está disponible en nuestro Pack Poker PRO con análisis avanzado y rangos GTO.`;
     
-    // Cache para búsqueda rápida
-    let rangeCache = {
-        '3BET': new Set(),
-        'CALL': new Set()
-    };
+    videoFrame.style.display = "none";
+    videoFrame.src = "";
+    videoLocked.style.display = "block";
     
-    // =============================
-    // FUNCIONES DE MARKETING - MODAL
-    // =============================
-    
-    const videoModal = document.getElementById("videoModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalDescription = document.getElementById("modalDescription");
-    const videoFrame = document.getElementById("videoFrame");
-    const videoLocked = document.getElementById("videoLocked");
-    
-    function openPositionModal(position) {
-        const positionNames = {
-            'UTG': 'Under The Gun',
-            'MP': 'Middle Position', 
-            'CO': 'Cutoff',
-            'SB': 'Small Blind'
-        };
-        
-        modalTitle.textContent = `🚀 ${positionNames[position]} - VERSIÓN PREMIUM`;
-        modalDescription.textContent = `El entrenador completo para ${positionNames[position]} está disponible en nuestro Pack Poker PRO con análisis avanzado y estrategias GTO.`;
-        
-        videoFrame.style.display = "none";
-        videoFrame.src = "";
-        videoLocked.style.display = "block";
-        
-        videoModal.classList.add("active");
+    videoModal.classList.add("active");
+}
+
+function closeVideoModal() {
+    videoModal.classList.remove("active");
+    videoFrame.src = "";
+}
+
+videoModal.addEventListener("click", (e) => {
+    if (e.target === videoModal) closeVideoModal();
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeVideoModal();
+});
+
+function selectPosition(pos) {
+    if (pos !== 'BU') {
+        redirectToPremium(pos);
+        return;
     }
     
-    function redirectToPremium(position) {
-        openPositionModal(position);
-    }
+    document.querySelectorAll('.pos-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+// =============================
+// FUNCIONES DEL ENTRENADOR
+// =============================
+
+function initRangeCache() {
+    rangeCache['3BET'].clear();
+    rangeCache['CALL'].clear();
     
-    function closeVideoModal() {
-        videoModal.classList.remove("active");
-        videoFrame.src = "";
-    }
-    
-    videoModal.addEventListener("click", (e) => {
-        if (e.target === videoModal) closeVideoModal();
+    RANGOS['3BET'].forEach(hand => {
+        rangeCache['3BET'].add(hand);
     });
     
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeVideoModal();
+    RANGOS['CALL'].forEach(hand => {
+        rangeCache['CALL'].add(hand);
     });
+}
+
+function initQuiz() {
+    initRangeCache();
+    generateRandomHand();
+    updateScoreDisplay();
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('decisionButtons').style.display = 'flex';
+}
+
+function generateRandomHand() {
+    const ranks = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
+    const suits = ['s', 'h', 'd', 'c'];
+    const suitSymbols = {'s': '♠', 'h': '♥', 'd': '♦', 'c': '♣'};
     
-    function selectPosition(pos) {
-        if (pos !== 'BU') {
-            redirectToPremium(pos);
-            return;
-        }
+    let card1, card2;
+    do {
+        const rank1 = ranks[Math.floor(Math.random() * ranks.length)];
+        const rank2 = ranks[Math.floor(Math.random() * ranks.length)];
+        const suit1 = suits[Math.floor(Math.random() * suits.length)];
+        const suit2 = suits[Math.floor(Math.random() * suits.length)];
         
-        document.querySelectorAll('.pos-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-    }
+        card1 = { rank: rank1, suit: suit1 };
+        card2 = { rank: rank2, suit: suit2 };
+    } while (card1.rank === card2.rank && card1.suit === card2.suit);
     
-    // =============================
-    // FUNCIONES DEL ENTRENADOR
-    // =============================
+    const rankOrder = {'A':14, 'K':13, 'Q':12, 'J':11, 'T':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2};
+    const isPair = card1.rank === card2.rank;
+    const isSuited = card1.suit === card2.suit;
     
-    function initRangeCache() {
-        rangeCache['3BET'].clear();
-        rangeCache['CALL'].clear();
-        
-        RANGOS_BB_vs_BTN['3BET'].forEach(hand => {
-            rangeCache['3BET'].add(hand);
-        });
-        
-        RANGOS_BB_vs_BTN['CALL'].forEach(hand => {
-            rangeCache['CALL'].add(hand);
-        });
-        
-        updateRangePercentages();
-    }
-    
-    function updateRangePercentages() {
-        const totalCombos = 1326;
-        let threeBetCombos = 0;
-        let callCombos = 0;
-        
-        RANGOS_BB_vs_BTN['3BET'].forEach(hand => {
-            if (hand.length === 2) threeBetCombos += 6;
-            else if (hand[2] === 's') threeBetCombos += 4;
-            else if (hand[2] === 'o') threeBetCombos += 12;
-        });
-        
-        RANGOS_BB_vs_BTN['CALL'].forEach(hand => {
-            if (hand.length === 2) callCombos += 6;
-            else if (hand[2] === 's') callCombos += 4;
-            else if (hand[2] === 'o') callCombos += 12;
-        });
-        
-        const foldCombos = totalCombos - threeBetCombos - callCombos;
-        
-        document.getElementById('foldPercent').textContent = 
-            ((foldCombos / totalCombos) * 100).toFixed(1) + '%';
-        document.getElementById('callPercent').textContent = 
-            ((callCombos / totalCombos) * 100).toFixed(1) + '%';
-        document.getElementById('betPercent').textContent = 
-            ((threeBetCombos / totalCombos) * 100).toFixed(1) + '%';
-    }
-    
-    function init() {
-        initRangeCache();
-        generateRandomHand();
-        updateStats();
-        document.getElementById("feedback").style.display = "none";
-        document.getElementById("nextBtn").style.display = "none";
-    }
-    
-    function generateRandomHand() {
-        const ranks = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
-        const suits = ['s', 'h', 'd', 'c'];
-        const suitSymbols = {'s': '♠', 'h': '♥', 'd': '♦', 'c': '♣'};
-        
-        let card1, card2;
-        do {
-            const rank1 = ranks[Math.floor(Math.random() * ranks.length)];
-            const rank2 = ranks[Math.floor(Math.random() * ranks.length)];
-            const suit1 = suits[Math.floor(Math.random() * suits.length)];
-            const suit2 = suits[Math.floor(Math.random() * suits.length)];
-            
-            card1 = { rank: rank1, suit: suit1 };
-            card2 = { rank: rank2, suit: suit2 };
-        } while (card1.rank === card2.rank && card1.suit === card2.suit);
-        
-        const rankOrder = {'A':14, 'K':13, 'Q':12, 'J':11, 'T':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2};
-        const isPair = card1.rank === card2.rank;
-        const isSuited = card1.suit === card2.suit;
-        
-        let handNotation;
-        if (isPair) {
-            handNotation = card1.rank + card2.rank;
+    let handNotation;
+    if (isPair) {
+        handNotation = card1.rank + card2.rank;
+    } else {
+        let highCard, lowCard;
+        if (rankOrder[card1.rank] > rankOrder[card2.rank]) {
+            highCard = card1;
+            lowCard = card2;
         } else {
-            let highCard, lowCard;
-            if (rankOrder[card1.rank] > rankOrder[card2.rank]) {
-                highCard = card1;
-                lowCard = card2;
-            } else {
-                highCard = card2;
-                lowCard = card1;
-            }
-            
-            handNotation = highCard.rank + lowCard.rank + (isSuited ? 's' : 'o');
+            highCard = card2;
+            lowCard = card1;
         }
         
-        currentHand = handNotation;
-        displayHand(card1, card2, suitSymbols);
-        
-        return handNotation;
+        handNotation = highCard.rank + lowCard.rank + (isSuited ? 's' : 'o');
     }
     
-    function displayHand(card1, card2, suitSymbols) {
-        const handDisplay = document.getElementById('handDisplay');
-        
-        const cards = [
-            { rank: card1.rank, suit: suitSymbols[card1.suit], colorClass: card1.suit },
-            { rank: card2.rank, suit: suitSymbols[card2.suit], colorClass: card2.suit }
-        ];
-        
-        handDisplay.innerHTML = cards.map(card => {
-            return `<div class="card-chip">
-                <b class="${card.colorClass}">${card.rank}${card.suit}</b>
-            </div>`;
-        }).join('');
-        
-        handDisplay.innerHTML += `
-            <div style="flex: 1; max-width: 120px;">
-                <div class="hand-notation">${currentHand}</div>
-                <div class="hand-type">${getHandTypeDescription(currentHand)}</div>
-            </div>
-        `;
+    currentHand = handNotation;
+    displayHand(card1, card2, suitSymbols);
+    
+    return handNotation;
+}
+
+function displayHand(card1, card2, suitSymbols) {
+    const handDisplay = document.getElementById('handDisplay');
+    
+    const cards = [
+        { rank: card1.rank, suit: suitSymbols[card1.suit], colorClass: card1.suit },
+        { rank: card2.rank, suit: suitSymbols[card2.suit], colorClass: card2.suit }
+    ];
+    
+    handDisplay.innerHTML = cards.map(card => {
+        return `<div class="card-chip"><b class="${card.colorClass}">${card.rank}${card.suit}</b></div>`;
+    }).join('');
+    
+    handDisplay.innerHTML += `<div style="margin-top: 15px; font-size: 18px; color: var(--accent);">${currentHand}</div>`;
+}
+
+function getCorrectAction() {
+    if (rangeCache['3BET'].has(currentHand)) {
+        return '3BET';
     }
     
-    function getHandTypeDescription(hand) {
-        if (hand.length === 2) {
-            const rankOrder = {'A':14, 'K':13, 'Q':12, 'J':11, 'T':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2};
-            const rank = hand[0];
-            if (rankOrder[rank] >= 11) return 'Pocket Pair Premium';
-            if (rankOrder[rank] >= 8) return 'Pocket Pair Media';
-            return 'Pocket Pair Baja';
-        } else if (hand[2] === 's') {
-            if (hand[0] === 'A') return 'Ace Suited';
-            if (['K','Q','J'].includes(hand[0])) return 'Broadway Suited';
-            return 'Suited Connector';
-        } else {
-            if (hand[0] === 'A') return 'Ace Offsuit';
-            if (['K','Q','J'].includes(hand[0])) return 'Broadway Offsuit';
-            return 'Offsuit Hand';
-        }
+    if (rangeCache['CALL'].has(currentHand)) {
+        return 'CALL';
     }
     
-    function getCorrectAction() {
-        if (rangeCache['3BET'].has(currentHand)) {
-            return '3BET';
-        }
-        
-        if (rangeCache['CALL'].has(currentHand)) {
-            return 'CALL';
-        }
-        
-        return 'FOLD';
+    return 'FOLD';
+}
+
+function checkDecision(userDecision) {
+    document.getElementById('decisionButtons').style.display = 'none';
+    
+    const correctAction = getCorrectAction();
+    score.total++;
+    
+    const isCorrect = userDecision === correctAction;
+    
+    if (isCorrect) {
+        score.correct++;
+        showFeedback('✓ CORRECTO', true, correctAction);
+    } else {
+        showFeedback(`✗ INCORRECTO - Esta mano es ${correctAction}`, false, correctAction);
     }
     
-    function checkDecision(userDecision) {
-        document.getElementById('decisionButtons').style.display = 'none';
-        
-        const correctAction = getCorrectAction();
-        stats.total++;
-        
-        const isCorrect = userDecision === correctAction;
-        
-        if (isCorrect) {
-            stats.correct++;
-            stats.currentStreak++;
-            if (stats.currentStreak > stats.bestStreak) {
-                stats.bestStreak = stats.currentStreak;
-            }
-            showFeedback(true, correctAction, userDecision);
-        } else {
-            stats.currentStreak = 0;
-            showFeedback(false, correctAction, userDecision);
-        }
-        
-        updateStats();
-        document.getElementById('nextBtn').style.display = 'block';
+    updateScoreDisplay();
+    document.getElementById('nextBtn').style.display = 'block';
+}
+
+function showFeedback(message, isCorrect, correctAction) {
+    const feedback = document.getElementById('feedback');
+    
+    let explanation = '';
+    switch(correctAction) {
+        case '3BET':
+            explanation = 'Mano fuerte para 3-betear y aplicar presión.';
+            break;
+        case 'CALL':
+            explanation = 'Mano defendible con buen precio para ver flop.';
+            break;
+        case 'FOLD':
+            explanation = 'Mano muy débil fuera de posición.';
+            break;
     }
     
-    function showFeedback(isCorrect, correctAction, userAction) {
-        const feedback = document.getElementById('feedback');
-        
-        const handType = getHandTypeDescription(currentHand);
-        
-        let explanation = '';
-        switch(correctAction) {
-            case '3BET':
-                explanation = 'Mano fuerte para 3-betear. Aplicas presión y juegas con iniciativa.';
-                break;
-            case 'CALL':
-                explanation = 'Mano defendible. Call con pot odds adecuadas para ver flop.';
-                break;
-            case 'FOLD':
-                explanation = 'Mano débil fuera de posición. Fold para preservar stack.';
-                break;
-        }
-        
-        feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
-        feedback.innerHTML = `
-            <div style="font-size: 24px; margin-bottom: 10px;">
-                ${isCorrect ? '✅ ¡CORRECTO!' : '❌ INCORRECTO'}
-            </div>
-            
-            <div style="margin-bottom: 15px; font-size: 16px;">
-                <strong>${currentHand}</strong> (${handType})<br>
-                <span style="opacity: 0.8;">Tu elección: ${userAction} | Correcto: ${correctAction}</span>
-            </div>
-            
-            <div class="action-explanation">
-                <strong>Explicación:</strong><br>
-                ${explanation}
-            </div>
-            
-            ${!isCorrect ? `
-            <div style="margin-top: 15px; padding: 12px; background: rgba(76, 201, 240, 0.1); border-radius: 8px; font-size: 14px;">
-                <strong>💡 Recuerda:</strong> ${currentHand} = ${correctAction} en BB vs BTN
-            </div>
-            ` : ''}
-        `;
+    feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+    feedback.innerHTML = `
+        <b>${message}</b><br><br>
+        <div style="text-align: left; font-size: 15px; line-height: 1.4;">
+            <strong>Mano:</strong> ${currentHand}<br>
+            <strong>Acción correcta:</strong> ${correctAction}<br><br>
+            <strong>Explicación:</strong> ${explanation}
+        </div>
+        <div style="margin-top: 15px; font-size: 14px; color: var(--muted);">
+            💡 <strong>Tip:</strong> En BB vs BTN defiende ampliamente pero sé selectivo post-flop
+        </div>
+    `;
+}
+
+function updateScoreDisplay() {
+    const percentage = score.total > 0 ? ((score.correct / score.total) * 100).toFixed(1) : 0;
+    document.getElementById('scoreDisplay').textContent = 
+        `Aciertos defensa: ${score.correct}/${score.total} (${percentage}%)`;
+}
+
+function nextHand() {
+    generateRandomHand();
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('decisionButtons').style.display = 'flex';
+}
+
+// Atajos de teclado
+document.addEventListener('keydown', function(e) {
+    if (e.key === '1' || e.key === 'F1') checkDecision('FOLD');
+    else if (e.key === '2' || e.key === 'F2') checkDecision('CALL');
+    else if (e.key === '3' || e.key === 'F3') checkDecision('3BET');
+    else if ((e.key === ' ' || e.key === 'Enter') && document.getElementById('nextBtn').style.display !== 'none') {
+        nextHand();
     }
-    
-    function updateStats() {
-        const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-        
-        document.getElementById('currentScore').textContent = stats.correct;
-        document.getElementById('accuracy').textContent = `${accuracy}%`;
-        document.getElementById('handsPlayed').textContent = stats.total;
-        document.getElementById('currentStreak').textContent = stats.currentStreak;
-    }
-    
-    function nextHand() {
-        generateRandomHand();
-        document.getElementById('feedback').style.display = 'none';
-        document.getElementById('nextBtn').style.display = 'none';
-        document.getElementById('decisionButtons').style.display = 'flex';
-    }
-    
-    // Atajos de teclado
-    document.addEventListener('keydown', function(e) {
-        if (e.key === '1' || e.key === 'F1') checkDecision('FOLD');
-        else if (e.key === '2' || e.key === 'F2') checkDecision('CALL');
-        else if (e.key === '3' || e.key === 'F3') checkDecision('3BET');
-        else if ((e.key === ' ' || e.key === 'Enter') && document.getElementById('nextBtn').style.display !== 'none') {
-            nextHand();
-        }
-    });
-    
-    window.onload = init;
-    </script>
+});
+
+window.onload = initQuiz;
+</script>
 </body>
 </html>

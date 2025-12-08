@@ -471,14 +471,14 @@ const videoLocked = document.getElementById("videoLocked");
 
 function redirectToPremium(position) {
     const positionNames = {
-        'UTG': 'Under The Gun',
-        'MP': 'Middle Position', 
-        'CO': 'Cutoff',
-        'SB': 'Small Blind'
+        'UTG': 'UTG',
+        'MP': 'MP', 
+        'CO': 'CO',
+        'SB': 'SB'
     };
     
     modalTitle.textContent = `🚀 Entrenador ${positionNames[position]} - PREMIUM`;
-    modalDescription.textContent = `La defensa desde ${positionNames[position]} está disponible en nuestro Pack Poker PRO con análisis avanzado y rangos GTO.`;
+    modalDescription.textContent = `La defensa desde BB versus ${positionNames[position]} está disponible en nuestro Pack Poker PRO con análisis avanzado y rangos GTO.`;
     
     videoFrame.style.display = "none";
     videoFrame.src = "";
@@ -683,3 +683,4 @@ window.onload = initQuiz;
 </script>
 </body>
 </html>
+

@@ -1,0 +1,1427 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entrenador Interactivo PLO5 | Flop (Defensa BB)</title>
+
+  <meta property="og:title" content="Entrenador Interactivo PLO5 | Defensa Big Blind" />
+  <meta property="og:description" content="Domina el PLO5! Toma decisiones claves, mejora tu estrategia y conviértete en un jugador más rentable..." />
+  <meta property="og:image" content="https://intellipoker.github.io/leopoker/imagenplo5.jpeg" />
+  <meta property="og:url" content="https://leopoker.com" />
+  <meta property="og:type" content="article" />
+  
+  <style>
+    .imagen-responsive {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+    }
+    
+    :root {
+      --bg: #0b0f14;
+      --card: #121826;
+      --muted: #8aa0b6;
+      --text: #e6eef7;
+      --accent: #4cc9f0;
+      --good: #2dd4bf;
+      --bad: #f87171;
+      --warn: #fbbf24;
+      --beginner: #3b82f6;
+      --intermediate: #a855f7;
+      --advanced: #ef4444;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: linear-gradient(180deg, #0b0f14, #0c111a 60%);
+      color: var(--text);
+      font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial;
+      min-height: 100vh;
+      padding: 20px 0;
+      padding-bottom: 70px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #1f2937;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    
+    .header .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    
+    .difficulty-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    
+    .diff-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      background: #121826;
+      border: 1px solid #1f2937;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .diff-btn.active {
+      background: #1e293b;
+      border-color: #334155;
+      color: var(--text);
+    }
+    
+    .diff-btn.beginner.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+    
+    .diff-btn.intermediate.active {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #c4b5fd;
+    }
+    
+    .diff-btn.advanced.active {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    
+    .main-card {
+      background: var(--card);
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .meta-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+      justify-content: center;
+    }
+    
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #0e1626;
+      border: 1px solid #213042;
+      color: var(--muted);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .pill.beginner {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+    
+    .pill.intermediate {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #c4b5fd;
+    }
+    
+    .pill.advanced {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    
+    .game-board {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: #0e1626;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 15px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    
+    .card-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 84px;
+      border-radius: 8px;
+      background: #0a0f17;
+      border: 1px solid #22324a;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+    
+    .card-chip.small {
+      width: 48px;
+      height: 67px;
+    }
+    
+    .card-chip b {
+      font-size: 18px;
+    }
+    
+    .card-chip.small b {
+      font-size: 16px;
+    }
+    
+    .s { color: #60a5fa; } 
+    .h { color: #fb7185; } 
+    .d { color: #f59e0b; } 
+    .c { color: #34d399; }
+    
+    .context-section {
+      background: #0e1626;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    
+    .context-text {
+      font-size: 17px;
+      line-height: 1.5;
+      color: var(--muted);
+      text-align: left;
+    }
+    
+    .actions-section {
+      margin-bottom: 25px;
+    }
+    
+    .actions-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .action-btn {
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 1px solid #1f2b3a;
+      background: #0e1626;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      font-size: 16px;
+      min-width: 100px;
+      text-align: center;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      border-color: #2a3b52;
+      background: #131d30;
+    }
+    
+    .action-btn.primary {
+      background: linear-gradient(180deg, #102033, #0e1626);
+      border-color: #2a3b52;
+    }
+    
+    .action-btn.good {
+      border-color: rgba(45, 212, 191, 0.4);
+      box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.2) inset;
+    }
+    
+    .action-btn.bad {
+      border-color: rgba(248, 113, 113, 0.4);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.2) inset;
+    }
+    
+    .feedback-section {
+      margin-bottom: 25px;
+    }
+    
+    .result-box {
+      padding: 20px;
+      border-radius: 12px;
+      background: #0f1724;
+      border: 1px solid #22324a;
+    }
+    
+    .result-box.good {
+      border-color: rgba(45, 212, 191, 0.4);
+    }
+    
+    .result-box.bad {
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+    
+    .stats-section {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    
+    .stat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    
+    .stat-dot.correct { background: var(--good); }
+    .stat-dot.incorrect { background: var(--bad); }
+    
+    .progress-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 12px;
+      background: #0f1724;
+      border: 1px solid #22324a;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #3ddad7);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #1f2937;
+    }
+    
+    .hidden { display: none; }
+    .text-center { text-align: center; }
+    .mt-20 { margin-top: 20px; }
+    .mb-20 { margin-bottom: 20px; }
+    
+    .concept-tag {
+      text-align: left;
+      display: inline-block;
+      padding: 5px 10px;
+      background: rgba(76, 201, 240, 0.1);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      margin: 5px 5px 5px 0;
+      text-align: left;
+      float: left;
+    }
+    
+    .equity-calculator {
+      margin-top: 20px;
+      padding: 15px;
+      background: #0f1724;
+      border-radius: 8px;
+      border: 1px solid #22324a;
+      clear: both;
+    }
+    
+    .equity-bar {
+      height: 22px;
+      background: #0a0f17;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+      position: relative;
+    }
+    
+    .equity-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #3ddad7);
+      width: 50%;
+      transition: width 0.5s ease;
+    }
+    
+    .equity-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    
+    @media (max-width: 768px) {
+      .card-chip {
+        width: 50px;
+        height: 70px;
+      }
+      
+      .card-chip.small {
+        width: 40px;
+        height: 56px;
+      }
+      
+      .card-chip b {
+        font-size: 16px;
+      }
+      
+      .card-chip.small b {
+        font-size: 14px;
+      }
+      
+      .action-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        min-width: 80px;
+      }
+      
+      .actions-grid {
+        gap: 8px;
+      }
+      
+      .cards-container {
+        gap: 6px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .card-chip {
+        width: 44px;
+        height: 62px;
+      }
+      
+      .card-chip.small {
+        width: 36px;
+        height: 50px;
+      }
+      
+      .card-chip b {
+        font-size: 14px;
+      }
+      
+      .card-chip.small b {
+        font-size: 12px;
+        margin-top: -2px;
+      }
+      
+      .action-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+        min-width: 70px;
+      }
+      
+      .section-title {
+        font-size: 14px;
+      }
+      
+      .context-text {
+        font-size: 15px;
+        text-align: left;
+      }
+    }
+    
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #000;
+      border-top: 2px solid #FFD700;
+      padding: 12px 0;
+      box-shadow: 0 -2px 5px rgba(255, 215, 0, 0.2);
+      z-index: 1000;
+    }
+
+    .footer-nav button {
+      background-color: #FFD700;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .footer-nav button:hover {
+      background-color: #000;
+      color: #FFD700;
+      border: 2px solid #FFD700;
+    }
+
+    .concept-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 15px;
+      clear: both;
+    }
+
+    .concept-list li {
+      margin: 0;
+    }
+
+    .concept-link {
+      color: #4cc9f0;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .concept-link:hover {
+      color: #2dd4bf;
+      text-decoration: underline;
+    }
+
+    .premium-badge {
+      background: linear-gradient(45deg, #ffd700, #ffb700);
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.6rem;
+      margin-left: 8px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    /* MARKETING POP-UP STYLES - Mejorados */
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 15, 20, 0.98);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .video-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #121826, #0e1626);
+      padding: 25px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 700px;
+      text-align: center;
+      border: 1px solid #2a3b52;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+      background: #0e1626;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #4cc9f0;
+      border-radius: 4px;
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4cc9f0, #2dd4bf);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #8aa0b6;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+      background: rgba(31, 41, 55, 0.5);
+      z-index: 10;
+    }
+
+    .close-modal:hover {
+      color: #4cc9f0;
+      background: rgba(76, 201, 240, 0.1);
+      transform: rotate(90deg);
+    }
+
+    #modalTitle {
+      font-size: 22px;
+      color: #4cc9f0;
+      margin-bottom: 10px;
+      font-weight: 600;
+      padding-right: 40px;
+    }
+
+    #modalDescription {
+      color: #8aa0b6;
+      margin-bottom: 25px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0a0f17;
+    }
+
+    #videoFrame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+    .video-locked {
+      padding: 30px;
+      border: 2px dashed #4cc9f0;
+      border-radius: 12px;
+      color: #8aa0b6;
+      margin: 20px 0;
+      background: rgba(76, 201, 240, 0.05);
+    }
+
+    .lock-icon {
+      font-size: 48px;
+      color: #ffd700;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .video-locked h3 {
+      color: #ffd700;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .video-locked p {
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .buy-btn {
+      margin-top: 10px;
+      padding: 12px 24px;
+      background: linear-gradient(45deg, #ffd700, #ffb700);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #000;
+      font-size: 15px;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 200px;
+      margin: 10px auto;
+    }
+
+    .buy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .demo-video {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(76, 201, 240, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid #4cc9f0;
+    }
+
+    .demo-video p {
+      color: #e6eef7;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .watch-demo-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid #4cc9f0;
+      color: #4cc9f0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .watch-demo-btn:hover {
+      background: #4cc9f0;
+      color: #121826;
+    }
+
+    /* Countdown Timer */
+    .countdown-timer {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .countdown-timer p {
+      color: #fca5a5;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    #countdown {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ef4444;
+      font-family: monospace;
+    }
+
+    /* Success Modal */
+    .success-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 15, 20, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+
+    .success-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .success-content {
+      background: linear-gradient(145deg, #121826, #0e1626);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 400px;
+      text-align: center;
+      border: 1px solid #2dd4bf;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      color: #2dd4bf;
+      margin-bottom: 15px;
+    }
+
+    .success-content h3 {
+      color: #2dd4bf;
+      margin-bottom: 10px;
+    }
+
+    .success-content p {
+      color: #8aa0b6;
+      margin-bottom: 20px;
+    }
+
+    .video-locked ul {
+      text-align: left;
+      margin: 15px 0;
+      color: #8aa0b6;
+      font-size: 14px;
+      padding-left: 20px;
+    }
+
+    .video-locked li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>PLO5</h1>
+      <div class="subtitle">Decision en FLOP</div>
+    </header>
+    
+    <!-- Difficulty Selector -->
+    <div class="difficulty-selector" id="difficultySelector">
+      <button class="diff-btn beginner active" data-diff="beginner">Principiante</button>
+      <button class="diff-btn intermediate" data-diff="intermediate">Intermedio</button>
+      <button class="diff-btn advanced" data-diff="advanced">Avanzado</button>
+    </div>
+    
+    <!-- Main Card -->
+    <div class="main-card">
+      <!-- Meta Information -->
+      <div class="meta-info">
+        <span class="pill" id="difficultyPill">Principiante</span>
+        <span class="pill" id="qcount">Mano 1 / 1</span>
+        <span class="pill" id="score">Puntos: 0</span>
+      </div>
+
+
+      <!-- Context Section -->
+      <div class="context-section">
+        <div class="context-text" id="context"></div>
+      </div>
+      
+      <!-- Game Board - FLOP CORREGIDO -->
+      <div class="game-board">
+        <div class="section-title">Board (Flop)</div>
+        <div class="cards-container" id="board">
+          <!-- Aquí se mostrarán las cartas: J♠ 7♠ 4♦ -->
+        </div>
+      </div>
+      
+
+      
+      <!-- Tu Mano - CORREGIDA -->
+      <div class="game-board">
+        <div class="section-title">Tu Mano</div>
+        <div class="cards-container" id="hand">
+          <!-- Aquí se mostrarán las cartas: A♠ Q♣ T♠ 8♥ 5♦ -->
+        </div>
+      </div>
+      
+      <!-- Actions Section -->
+      <div class="actions-section">
+        <div class="section-title">Selecciona tu acción</div>
+        <div class="actions-grid" id="actions"></div>
+      </div>
+      
+      <!-- Feedback Section -->
+      <div class="feedback-section">
+        <div id="feedback" class="result-box hidden"></div>
+        
+        <!-- Botón WhatsApp -->
+        <div class="text-center mt-20">
+          <button class="action-btn primary" id="whatsappBtn" style="display:none;">Compartir en WhatsApp</button>
+        </div>
+      </div>
+      
+      <!-- Stats Section -->
+      <div class="stats-section">
+        <div class="stat-item"><div class="stat-dot correct"></div> Correctas: <span id="correctCount">0</span></div>
+        <div class="stat-item"><div class="stat-dot incorrect"></div> Incorrectas: <span id="incorrectCount">0</span></div>
+      </div>
+      
+      <!-- Progress Section -->
+      <div class="progress-section">
+        <div class="progress-bar">
+          <div class="progress-fill" id="bar"></div>
+        </div>
+        <button class="action-btn primary" id="nextBtn" disabled>Siguiente</button>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      Consejo: en PLO5 prioriza <b>Nut potential + redraws</b>, controla el bote en boards dinámicos si no tienes la nuts.
+    </div>
+  </div>
+
+  <!-- FOOTER NAVIGATION -->
+  <div class="footer-nav">
+    <a href="https://intellipoker.github.io/leopoker/bio.html"><button>Inicio</button></a>
+    <a href="https://intellipoker.github.io/leopoker/index.html"><button>Visor</button></a>
+    <a href="https://intellipoker.github.io/leopoker/carta11aa.html"><button>Curso!</button></a>
+  </div>
+
+  <!-- Video Modal Mejorado -->
+  <div class="video-modal" id="videoModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+      <h2 id="modalTitle">Concepto Premium</h2>
+      <p id="modalDescription">Explicación detallada disponible en nuestro Pack Poker PRO</p>
+      
+      <!-- Video Container -->
+      <div class="video-container">
+        <iframe id="videoFrame"></iframe>
+      </div>
+      
+      <!-- Countdown Timer (Oferta especial) -->
+      <div class="countdown-timer" id="countdownTimer" style="display:none;">
+        <p>🔥 ¡Oferta por tiempo limitado! 🔥</p>
+        <div id="countdown">15:00</div>
+        <p style="font-size:12px;margin-top:8px;">Descuento expira en:</p>
+      </div>
+      
+      <!-- Contenido Premium Bloqueado -->
+      <div class="video-locked" id="videoLocked">
+        <div class="lock-icon">🔒</div>
+        <h3>Contenido Premium Desbloqueado</h3>
+        <p>Este video explicativo detallado está disponible en nuestro <strong>Pack Poker PRO</strong> que incluye:</p>
+        <ul>
+          <li>🎬 <strong>25+ videos exclusivos</strong> de estrategia PLO5</li>
+          <li>📊 <strong>Análisis de rangos</strong> completos preflop y postflop</li>
+          <li>🎯 <strong>Herramientas de cálculo</strong> de equity y EV</li>
+          <li>💎 <strong>Derechos de reventa</strong> incluidos</li>
+          <li>🔄 <strong>Actualizaciones gratis</strong> de por vida</li>
+        </ul>
+        
+        <!-- Precio con descuento -->
+        <div style="margin:20px 0;">
+          <div style="text-decoration:line-through;color:#8aa0b6;font-size:14px;">Precio normal: $97 USD</div>
+          <div style="font-size:28px;color:#ffd700;font-weight:bold;">$47 USD</div>
+          <div style="color:#2dd4bf;font-size:14px;">¡Ahorras $50! (52% OFF)</div>
+        </div>
+        
+        <button class="buy-btn" onclick="purchaseCourse()">
+          🚀 OBTENER PACK PRO AHORA
+        </button>
+        
+        <!-- Video demo -->
+        <div class="demo-video">
+          <p>¿Quieres ver una muestra? Mira este extracto gratuito:</p>
+          <button class="watch-demo-btn" onclick="playDemoVideo()">
+            ▶ Ver demostración (1 min)
+          </button>
+        </div>
+        
+        <!-- Garantía -->
+        <div style="margin-top:20px;padding:10px;background:rgba(45,212,191,0.1);border-radius:6px;">
+          <div style="color:#2dd4bf;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;">
+            <span>✅</span>
+            <span><strong>Garantía de 30 días</strong> o tu dinero de vuelta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <div class="success-icon">🎉</div>
+      <h3>¡Redirigiendo al Curso!</h3>
+      <p>Serás llevado automáticamente a la página de compra en <strong>3 segundos</strong>...</p>
+      <div style="margin-top:20px;">
+        <button class="watch-demo-btn" onclick="closeSuccessModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Datos CORREGIDOS con la mano específica
+    const hands = {
+      beginner: [
+        {
+          id: 1,
+          // BOARD CORREGIDO: Solo 3 cartas del flop
+          board: ["J♠", "7♠", "4♦"],
+          
+          // TU MANO CORREGIDA: 5 cartas específicas
+          hand: ["A♠", "Q♣", "T♠", "8♥", "5♦"],
+          
+          // CONTEXTO CORREGIDO
+          context: `5-Player PLO5 – Pot Limit<br><br>
+Flop: <b>J♠ 7♠ 4♦</b> ($30)<br><br>
+UTG check.<br>
+HJ (Hero) apuesta $12.55.<br>
+CO (regular sólido) hace <b>POT raise a $67.65</b>.<br><br>
+Quedan Heads-Up.<br>
+Si pusheas, inviertes <b>$95</b> para un bote final de <b>$220</b>.<br><br>
+¿Qué acción es mejor a largo plazo?`,
+          
+          options: ["Fold", "Push"],
+          correct: "Fold",
+          
+          explain: `<b>Nut FD + overcards NO es stack-off automático vs pot-raise de un regular.</b> <br><br>
+Necesitas equity clara, no solo "sensación de fuerza". Hero necesita ~43% de equity para justificar el push (95$ por 220$). Contra el rango fuerte de un reg sólido (sets, wraps + redraws), tu equity real ronda 38–42%. Es decir: equity insuficiente, riesgo alto y varianza innecesaria..<br><br>
+<b>Conclusión:</b> el push es marginal o -EV; el <b>fold maximiza EV a largo plazo</b>.`,
+          
+          concepts: ["Pot Odds", "Nut FD ≠ stack-off", "Rango fuerte vs reg", "PLO5 Pot-Limit"],
+          equity: 40,
+          equityExplanation: `Estimación realista vs rango fuerte de raise-pot en flop.
+No alcanza el ~43% necesario para justificar el push.`
+        }
+      ],
+      intermediate: [],
+      advanced: []
+    };
+
+    // Variables globales para marketing
+    let conceptClicked = '';
+    let timerInterval = null;
+    let startTime = 15 * 60;
+
+    // Datos de videos por concepto
+    const videoData = {
+      "Pot Odds": {
+        title: "Break-even point",
+        description: "Cómo calcular y usar las pot odds para tomar decisiones rentables",
+        videoId: "dQw4w9WgXcQ",
+        demoVideoId: "dQw4w9WgXcQ",
+        premium: true
+      },
+      "Nut FD ≠ stack-off": {
+        title: "Cuándo NO hacer Stack-off con Nut FD",
+        description: "Estrategias para evitar sobrevalorar el nut flush draw",
+        videoId: "dQw4w9WgXcQ",
+        demoVideoId: "dQw4w9WgXcQ",
+        premium: true
+      },
+      "Rango fuerte vs reg": {
+        title: "Leyendo Rangos de Regulares",
+        description: "Cómo identificar y enfrentar rangos fuertes de jugadores regulares",
+        videoId: "dQw4w9WgXcQ",
+        demoVideoId: "dQw4w9WgXcQ",
+        premium: true
+      },
+      "PLO5 Pot-Limit": {
+        title: "Teoría de zonas de S.-off",
+        description: "Estrategias específicas para el formato Pot-Limit en Omaha 5",
+        videoId: "dQw4w9WgXcQ",
+        demoVideoId: "dQw4w9WgXcQ",
+        premium: true
+      }
+    };
+
+    // Elementos del DOM
+    const elBoard = document.getElementById('board');
+    const elHand = document.getElementById('hand');
+    const elContext = document.getElementById('context');
+    const elActions = document.getElementById('actions');
+    const elFeedback = document.getElementById('feedback');
+    const elNext = document.getElementById('nextBtn');
+    const elQCount = document.getElementById('qcount');
+    const elScore = document.getElementById('score');
+    const elBar = document.getElementById('bar');
+    const elDifficultyPill = document.getElementById('difficultyPill');
+    const elCorrectCount = document.getElementById('correctCount');
+    const elIncorrectCount = document.getElementById('incorrectCount');
+    const difficultySelector = document.getElementById('difficultySelector');
+    const elWhatsappBtn = document.getElementById('whatsappBtn');
+    const videoModal = document.getElementById("videoModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const videoFrame = document.getElementById("videoFrame");
+    const videoLocked = document.getElementById("videoLocked");
+
+    // Variables de estado
+    let currentDifficulty = 'beginner';
+    let idx = 0;
+    let score = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+    let answered = false;
+    let currentHands = hands.beginner;
+
+    // Función para determinar la clase de suit de una carta
+    function suitClass(card){
+      const s = card.slice(-1);
+      return s === '♠' ? 's' : s === '♥' ? 'h' : s === '♦' ? 'd' : 'c';
+    }
+
+    // Función para renderizar las cartas
+    function renderCards(container, cards, isSmall = false){
+      container.innerHTML = '';
+      cards.forEach(c => {
+        const div = document.createElement('div');
+        div.className = `card-chip ${suitClass(c)} ${isSmall ? 'small' : ''}`;
+        div.innerHTML = `<b>${c.slice(0,-1)}</b> <span style="position:absolute;bottom:6px;right:8px;opacity:.9;font-size: ${isSmall ? '12px' : '14px'}">${c.slice(-1)}</span>`;
+        container.appendChild(div);
+      });
+    }
+
+    // Función para renderizar la pregunta actual
+    function renderQuestion(){
+      const q = currentHands[idx];
+      answered = false;
+      elFeedback.className = 'result-box hidden';
+      elNext.disabled = true;
+      elWhatsappBtn.style.display = 'none';
+
+      // Actualizar contadores
+      elQCount.textContent = `Mano ${idx+1} / ${currentHands.length}`;
+      elScore.textContent = `Puntos: ${score}`;
+      elCorrectCount.textContent = correctCount;
+      elIncorrectCount.textContent = incorrectCount;
+      elBar.style.width = `${(idx)/currentHands.length*100}%`;
+
+      // Actualizar dificultad
+      elDifficultyPill.textContent = currentDifficulty === 'beginner' ? 'Principiante' : 
+                                    currentDifficulty === 'intermediate' ? 'Intermedio' : 'Avanzado';
+      elDifficultyPill.className = `pill ${currentDifficulty}`;
+
+      // Renderizar cartas CORREGIDAS
+      renderCards(elBoard, q.board);  // Solo 3 cartas del flop
+      renderCards(elHand, q.hand, true);  // 5 cartas de la mano
+      elContext.innerHTML = q.context;  // Usar innerHTML para mantener formato
+
+      // Renderizar opciones
+      elActions.innerHTML = '';
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'action-btn';
+        btn.textContent = opt;
+        btn.onclick = () => onAnswer(opt);
+        elActions.appendChild(btn);
+      });
+    }
+
+    // Función para manejar la respuesta
+    function onAnswer(opt){
+      if(answered) return;
+      answered = true;
+      const q = currentHands[idx];
+      const correct = opt === q.correct;
+      
+      if(correct) {
+        score++;
+        correctCount++;
+      } else {
+        incorrectCount++;
+      }
+      
+      elScore.textContent = `Puntos: ${score}`;
+      elCorrectCount.textContent = correctCount;
+      elIncorrectCount.textContent = incorrectCount;
+
+      // Estilizar botones
+      Array.from(elActions.children).forEach(b => {
+        if(b.textContent === q.correct) b.classList.add('good');
+        if(b.textContent === opt && !correct) b.classList.add('bad');
+        b.disabled = true;
+      });
+
+      // Mostrar conceptos como ENLACES
+      let conceptsHTML = '';
+      if (q.concepts && q.concepts.length) {
+        conceptsHTML = `
+        <div style="margin-top:15px;">
+          <p><strong>Conceptos clave:</strong></p>
+          <ul class="concept-list">
+        `;
+        
+        q.concepts.forEach(concept => {
+          const conceptData = videoData[concept] || { title: concept, premium: true };
+          conceptsHTML += `
+            <li class="concept-tag">
+              <a class="concept-link" onclick="openVideoModal('${concept}', '${conceptData.videoId || 'dQw4w9WgXcQ'}', ${conceptData.premium})">
+                ${concept}
+                ${conceptData.premium ? '<span class="premium-badge">PRO</span>' : ''}
+              </a>
+            </li>
+          `;
+        });
+
+        conceptsHTML += '</ul></div>';
+      }
+
+      // Crear HTML para equity
+      const equityHTML = `
+        <div class="equity-calculator">
+          <div class="section-title">Estimación de Equity</div>
+          <div class="equity-bar">
+            <div class="equity-fill" style="width: ${q.equity}%"></div>
+          </div>
+          <div class="equity-labels">
+            <span>Tu mano: <span>${q.equity}%</span></span>
+            <span>Rango villano: <span>${100 - q.equity}%</span></span>
+          </div>
+          <div class="text-center mt-20">${q.equityExplanation}</div>
+        </div>
+      `;
+
+      // Mostrar feedback
+      elFeedback.className = `result-box ${correct?'good':'bad'}`;
+      elFeedback.innerHTML = `
+        <b>${correct? '✔ ¡Correcto!':'✖ Mejor opción: '+q.correct}</b><br><br>
+        ${q.explain}${conceptsHTML}
+        ${equityHTML}
+      `;
+
+      elNext.disabled = false;
+      elWhatsappBtn.style.display = 'inline-block';
+    }
+
+    // Función mejorada para abrir modal
+    function openVideoModal(concept, videoId, premium = true) {
+      conceptClicked = concept;
+      const data = videoData[concept] || {
+        title: concept,
+        description: `Explicación detallada sobre ${concept} en PLO5`,
+        videoId: videoId,
+        premium: premium
+      };
+
+      modalTitle.textContent = data.title;
+      modalDescription.textContent = data.description;
+
+      // Resetear display
+      videoFrame.style.display = "none";
+      videoFrame.src = "";
+      document.getElementById('countdownTimer').style.display = "none";
+      
+      if (premium) {
+        // Mostrar contenido premium
+        document.getElementById('videoLocked').style.display = "block";
+        
+        // Iniciar countdown si es la primera vez
+        if (!localStorage.getItem('countdownStarted')) {
+          startCountdown();
+          localStorage.setItem('countdownStarted', 'true');
+        } else {
+          showCountdown();
+        }
+        
+        // Trackear en analytics (simulado)
+        trackConceptClick(concept);
+      } else {
+        // Mostrar video gratuito
+        document.getElementById('videoLocked').style.display = "none";
+        videoFrame.style.display = "block";
+        videoFrame.src = `https://www.youtube.com/embed/${data.videoId}?rel=0&modestbranding=1&autoplay=1`;
+      }
+
+      videoModal.classList.add("active");
+      
+      // Scroll to top del modal
+      document.querySelector('.modal-content').scrollTop = 0;
+    }
+
+    // Función para play demo
+    function playDemoVideo() {
+      const data = videoData[conceptClicked];
+      if (data) {
+        videoFrame.style.display = "block";
+        videoFrame.src = `https://www.youtube.com/embed/${data.demoVideoId}?rel=0&modestbranding=1&autoplay=1&start=30`;
+        document.getElementById('videoLocked').style.display = "none";
+      }
+    }
+
+    // Función para comprar curso
+    function purchaseCourse() {
+      // Mostrar modal de éxito
+      document.getElementById('successModal').classList.add('active');
+      
+      // Track conversion
+      trackConversion(conceptClicked);
+      
+      // Redirigir después de 3 segundos
+      setTimeout(() => {
+        window.open('https://intellipoker.github.io/leopoker/carta11aa.html', '_blank');
+        closeSuccessModal();
+      }, 3000);
+    }
+
+    // Funciones auxiliares
+    function closeVideoModal() {
+      videoModal.classList.remove("active");
+      videoFrame.src = "";
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('successModal').classList.remove('active');
+    }
+
+    // Countdown timer
+    function startCountdown() {
+      const countdownElement = document.getElementById('countdown');
+      let timeLeft = startTime;
+      
+      timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          countdownElement.textContent = "¡Oferta expirada!";
+          document.getElementById('countdownTimer').style.backgroundColor = "rgba(248,113,113,0.1)";
+        }
+        
+        timeLeft--;
+      }, 1000);
+    }
+
+    function showCountdown() {
+      document.getElementById('countdownTimer').style.display = "block";
+      const savedTime = localStorage.getItem('countdownEnd');
+      if (savedTime) {
+        const timeLeft = Math.max(0, Math.floor((parseInt(savedTime) - Date.now()) / 1000));
+        if (timeLeft > 0) {
+          startTime = timeLeft;
+          startCountdown();
+        }
+      }
+    }
+
+    // Tracking functions
+    function trackConceptClick(concept) {
+      console.log(`[Marketing] Concepto clickeado: ${concept}`);
+    }
+
+    function trackConversion(concept) {
+      console.log(`[Marketing] Conversión desde concepto: ${concept}`);
+    }
+
+    // Event Listeners
+    videoModal.addEventListener("click", (e) => {
+      if (e.target === videoModal) closeVideoModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeVideoModal();
+        closeSuccessModal();
+      }
+    });
+
+    // Event listener para el botón Siguiente
+    elNext.addEventListener('click', () => {
+      if(idx < currentHands.length-1){
+        idx++;
+        renderQuestion();
+      } else {
+        // Finalizar
+        elBar.style.width = '100%';
+        elActions.innerHTML = '';
+        elFeedback.className = 'result-box good';
+        elFeedback.innerHTML = `
+          <b>¡Mano completada!</b><br><br>
+          Puntuación: ${score} / ${currentHands.length}. <br>
+          <span style="color: var(--muted)">Correctas: ${correctCount} | Incorrectas: ${incorrectCount}</span><br><br>
+          <span style="color: var(--muted)">¿Quieres practicar otro nivel?</span>
+        `;
+        
+        // Mostrar selector de dificultad otra vez
+        difficultySelector.style.display = 'flex';
+        elNext.disabled = true;
+        document.getElementById('context').textContent = '—';
+        document.getElementById('qcount').textContent = 'Finalizado';
+      }
+    });
+
+    // Configurar selector de dificultad
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentDifficulty = btn.dataset.diff;
+        currentHands = hands[currentDifficulty] || [];
+        idx = 0;
+        score = 0;
+        correctCount = 0;
+        incorrectCount = 0;
+        difficultySelector.style.display = 'none';
+        renderQuestion();
+      });
+    });
+
+    // WhatsApp sharing functionality
+    elWhatsappBtn.addEventListener('click', () => {
+      const message = `Estoy estudiando con el Entrenador PLO5 - Nivel ${currentDifficulty}.\nPuntuación: ${score} / ${currentHands.length}\nCorrectas: ${correctCount}, Incorrectas: ${incorrectCount}`;
+      const url = `https://wa.me/5492945402502?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    });
+
+    // Inicializar timer al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('countdownEnd')) {
+        const endTime = Date.now() + (15 * 60 * 1000);
+        localStorage.setItem('countdownEnd', endTime);
+      }
+      
+      // Ocultar selector después de elegir dificultad
+      difficultySelector.style.display = 'none';
+      
+      // Inicializar la aplicación con la mano CORREGIDA
+      renderQuestion();
+    });
+  </script>
+</body>
+</html>

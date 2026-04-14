@@ -1,0 +1,1187 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PLO5 Ultimate Trainer | Progresión táctica11</title>
+    <style>
+        :root {
+            --bnb-yellow: #F3BA2F;
+            --bg: #0b0f14;
+            --card: rgba(18,24,38,0.85);
+            --accent: #F3BA2F;
+            --good: #2dd4bf;
+            --bad: #f87171;
+            --muted: #8aa0b6;
+            --glass-border: rgba(243,186,47,0.2);
+            --s: #60a5fa;
+            --h: #fb7185;
+            --d: #f59e0b;
+            --c: #34d399;
+        }
+        *{ margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            color: #e6eef7;
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        /* LOGIN */
+        #moduleLogin {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0b0f14 0%, #0a0e17 100%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+        .login-card {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 48px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .avatar-selector {
+            margin: 20px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .avatar-selector:hover { transform: scale(1.05); }
+        .avatar-selector img {
+            width: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            padding: 4px;
+            background: rgba(0,0,0,0.3);
+        }
+        .nick-input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 60px;
+            width: 100%;
+            font-size: 16px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .nick-input:focus { outline: none; border-color: var(--accent); }
+        .start-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 14px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        /* JUEGO PRINCIPAL */
+        .main-game {
+            max-width: 550px;
+            margin: auto;
+            padding: 15px;
+            padding-bottom: 80px;
+            background: radial-gradient(circle at bottom, #164e63 0%, #0b0f14 80%);
+            border-top: 2px solid var(--accent);
+            border-radius: 40px 40px 0 0;
+        }
+        .hidden { display: none !important; }
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .player-nick {
+            font-size: 14px;
+            color: var(--accent);
+            background: rgba(243,186,47,0.15);
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .player-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            cursor: pointer;
+        }
+        /* Cajero compacto */
+        .cashier-barrr-compact {
+            background: #0B0E11;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(243,186,47,0.2);
+            margin-bottom: 15px;
+        }
+        .balance-group {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        .label { font-size: 10px; color: #848E9C; font-weight: 800; }
+        .amount { font-size: 18px; font-weight: 700; color: #EAECEF; font-family: monospace; }
+        .sub-label { font-size: 10px; color: #F3BA2F; font-weight: bold; }
+        .last-tx {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.5s ease;
+        }
+        .tx-positive { color: var(--good); border: 1px solid var(--good); background: rgba(45,212,191,0.1); }
+        .tx-negative { color: var(--bad); border: 1px solid var(--bad); background: rgba(248,113,113,0.1); }
+        /* Barra de vida */
+        .life-system { margin-bottom: 20px; }
+        .life-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        .life-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(243,186,47,0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .life-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #2dd4bf, #4cc9f0);
+            transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .low-hp { background: linear-gradient(90deg, #f87171, #fb7185) !important; }
+        /* Consola */
+        .game-console {
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            padding: 10px 12px;
+            margin: 10px 0;
+            backdrop-filter: blur(4px);
+        }
+        .console-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .console-btn {
+            background: #1e293b;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .console-btn.active {
+            background: var(--accent);
+            color: #0f172a;
+            box-shadow: 0 0 0 2px #facc15;
+        }
+        .console-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.2);
+        }
+        .console-btn.unlocked:hover {
+            background: #334155;
+            transform: translateY(-1px);
+        }
+        @media (max-width: 500px) {
+            .console-btn { padding: 4px 10px; font-size: 11px; }
+        }
+        /* Tarjeta de manos */
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin: 15px 0;
+        }
+        /* Estilos base para todos los tipos de baraja */
+        .card-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: calc(20% - 8px);
+            max-width: 58px;
+            aspect-ratio: 3 / 4;
+            border-radius: 10px;
+            font-weight: 800;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+        }
+        /* --- BARAJA CLÁSICA (ESTILO "BASIC/DIRTY") --- */
+.card-chip.classic {
+    /* Blanco sucio/grisáceo tipo papel viejo */
+    background: #d1d5db; 
+    color: #4b5563; /* Texto gris oscuro, no negro puro */
+    border: 1px solid #9ca3af;
+    border-radius: 2px; /* Esquinas casi rectas, menos modernas */
+    box-shadow: none; /* Eliminamos la sombra para que se vea plana */
+    align-items: center;
+    justify-content: center;
+    opacity: 0.9; /* Un poco de transparencia para que se vea "gastada" */
+}
+
+/* Colores de palos apagados */
+.classic.s, .classic.c { 
+    color: #1f2937; /* Negro apagado */
+}
+
+.classic.h, .classic.d { 
+    color: #991b1b; /* Rojo sangre seca/oscuro, menos vibrante */
+}
+
+.card-chip.classic small {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 0.7em;
+    font-family: serif; /* Fuente antigua para que se vea "vieja" */
+}
+
+/* Tipografía aburrida para el valor principal */
+.card-chip.classic::first-line {
+    font-family: 'Times New Roman', serif;
+    font-weight: normal;
+}
+        
+        /* Baraja moderna (tus estilos originales) */
+        .card-chip.modern {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9em;
+        }
+        .card-chip.modern small {
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            font-size: 0.7em;
+        }
+        .modern.s { color: var(--s); }
+        .modern.h { color: var(--h); }
+        .modern.d { color: var(--d); }
+        .modern.c { color: var(--c); }
+        
+        /* ========== NUEVA BARAJA GRINDER (PREMIUM) ========== */
+        .card-chip.grinder {
+            background: #1e1e2f; /* fallback */
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 6px 4px;
+            position: relative;
+            transition: transform 0.1s ease;
+        }
+        .card-chip.grinder:hover {
+            transform: scale(1.02);
+        }
+        /* Contenedor para la esquina superior izquierda */
+        .grinder-top-left {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+        .grinder-rank-small {
+            font-size: 0.8rem;
+        }
+        .grinder-suit-small {
+            font-size: 0.7rem;
+        }
+        /* Letra gigante en el centro/inferior derecha */
+        .grinder-rank-large {
+            font-size: 2rem;
+            font-weight: 900;
+            position: absolute;
+            bottom: 4px;
+            right: 8px;
+            line-height: 1;
+        }
+        /* Colores de fondo por palo (tonos oscuros pero vibrantes) */
+        .card-chip.grinder.s {
+            background: linear-gradient(145deg, #2d2d3a, #1a1a24);
+            color: #cbd5e1;
+        }
+        .card-chip.grinder.h {
+            background: linear-gradient(145deg, #4a1a2c, #2d0f1c);
+            color: #f87171;
+        }
+        .card-chip.grinder.d {
+            background: linear-gradient(145deg, #1a3a5c, #0f2338);
+            color: #60a5fa;
+        }
+        .card-chip.grinder.c {
+            background: linear-gradient(145deg, #1a3a2a, #0f2318);
+            color: #34d399;
+        }
+        /* Ajustes para los textos dentro de Grinder */
+        .card-chip.grinder .grinder-rank-small,
+        .card-chip.grinder .grinder-suit-small,
+        .card-chip.grinder .grinder-rank-large {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Botones de acción */
+        .actions-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0 10px;
+        }
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 160px;
+            border: 1px solid;
+        }
+        .btn-or {
+            background: rgba(45,212,191,0.15);
+            color: var(--good);
+            border-color: var(--good);
+        }
+        .btn-or:hover {
+            background: var(--good);
+            color: #000;
+            transform: scale(1.02);
+        }
+        .btn-fold {
+            background: rgba(248,113,113,0.15);
+            color: var(--bad);
+            border-color: var(--bad);
+        }
+        .btn-fold:hover {
+            background: var(--bad);
+            color: #fff;
+            transform: scale(1.02);
+        }
+        .next-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .score-badge {
+            font-size: 12px;
+            background: rgba(243,186,47,0.15);
+            padding: 5px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .feedback-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: left;
+            font-size: 0.85em;
+        }
+        /* Captcha */
+        .bottles-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .bottle {
+            width: 55px;
+            height: 140px;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column-reverse;
+            cursor: pointer;
+            overflow: hidden;
+            background: rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+        .bottle.selected {
+            transform: translateY(-10px);
+            box-shadow: 0 0 20px var(--accent);
+            border-color: #fff;
+        }
+        .bottle-complete {
+            border-color: var(--good);
+            box-shadow: 0 0 15px var(--good);
+        }
+        .liquid {
+            width: 100%;
+            height: 25%;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .color-1 { background: #F3BA2F; }
+        .color-2 { background: #2dd4bf; }
+        .color-3 { background: #60a5fa; }
+
+        /* Modal de configuración */
+        #settingsModal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .settings-card {
+            width: 90%;
+            max-width: 320px;
+            background: var(--card);
+            border: 1px solid var(--accent);
+            border-radius: 28px;
+            padding: 25px;
+            text-align: center;
+        }
+        .settings-card h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        .deck-option {
+            background: #1e293b;
+            border: none;
+            border-radius: 40px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 12px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .deck-option:hover {
+            background: #334155;
+            transform: scale(1.02);
+        }
+    </style>
+<body>
+
+<!-- PANTALLA DE LOGIN -->
+<div id="moduleLogin">
+    <div class="login-card">
+        <h2 style="color: var(--accent); margin-bottom: 10px;">🏆 PLO5 MASTER</h2>
+        <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">Entrenamiento GTO con EV en tiempo real</p>
+        <div class="avatar-selector" id="avatarSelector">
+            <img id="avatarImg" src="https://api.dicebear.com/7.x/bottts/svg?seed=BNB1" width="90">
+        </div>
+        <p style="font-size: 12px; color: var(--muted); margin-top: 5px;">👇 Toca para cambiar avatar</p>
+        <input type="text" id="userNick" class="nick-input" placeholder="Tu Nickname" maxlength="15">
+        <button class="start-btn" onclick="startGame()">🎮 SENTARSE A LA MESA</button>
+    </div>
+</div>
+
+<!-- JUEGO PRINCIPAL -->
+<div class="main-game" id="mainGame" style="display:none;">
+    <div class="player-header">
+        <span class="player-nick" id="playerNickDisplay">HÉROE</span>
+        <img id="playerAvatarSmall" class="player-avatar-small" src="">
+    </div>
+
+    <div class="cashier-barrr-compact">
+        <div class="balance-group">
+            <span class="label">BAL:</span>
+            <span id="bankrollDisplay" class="amount">$100.00</span>
+            <span class="sub-label">USDT</span>
+        </div>
+        <div id="lastTx" class="last-tx">LISTO</div>
+    </div>
+
+    <div class="life-system">
+        <div class="life-label">
+            <span>🧠 MENTAL FOCUS</span>
+            <span id="hpValue">100%</span>
+        </div>
+        <div class="life-bar-bg">
+            <div id="lifeBar" class="life-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- CONSOLA DE ESTADO -->
+    <div id="gameConsole" class="game-console">
+        <div class="console-row" id="modeRow"></div>
+        <div class="console-row" id="positionRow"></div>
+    </div>
+
+    <!-- Módulo PREFLOP -->
+    <div id="modulePreflop" class="card">
+        <div class="score-badge" id="preflopScore">🎯 ACIERTOS: 0</div>
+        <div id="preflopHand" class="cards-container"></div>
+        <div id="preflopActions" class="actions-row">
+            <button class="action-btn btn-or" onclick="makePreflopDecision('OR')">🎯 OR</button>
+            <button class="action-btn btn-fold" onclick="makePreflopDecision('FOLD')">❌ FOLD</button>
+        </div>
+        <button id="nextPreflopBtn" class="next-btn hidden" onclick="loadNextPreflopHand()">➡️ SIGUIENTE MANO</button>
+        <div id="preflopFeedback" class="feedback-box hidden"></div>
+    </div>
+
+    <!-- Módulo CAPTCHA -->
+    <div id="moduleCaptcha" class="card hidden">
+        <h2 style="font-size: 20px;">🧪 DESCANSAR MENTE</h2>
+        <p style="color: var(--muted); font-size: 13px;">Ordena los colores para recuperar enfoque</p>
+        <div class="bottles-wrapper" id="bottlesWrapper"></div>
+        <p id="puzzleStatus" style="font-weight: bold; color: var(--accent); font-size: 13px;"></p>
+        <button id="resetPuzzleBtn" class="action-btn" style="background: #334155; color: white; margin-top: 10px; width: 100%;" onclick="initBottleGame()">🔄 REINICIAR PUZZLE</button>
+    </div>
+</div>
+
+<div id="settingsModal">
+    <div class="settings-card">
+        <h3>⚙️ CONFIGURACIÓN</h3>
+        <div style="text-align:left; margin-bottom:20px;">
+            <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">SELECCIONAR BARAJA</p>
+            <button class="deck-option" onclick="setDeckStyle('classic')">🃏 Clásica (2 Colores)</button>
+            <button class="deck-option" onclick="setDeckStyle('modern')">🎨 Moderna (4 Colores)</button>
+            <button class="deck-option" onclick="setDeckStyle('grinder')">⚡ Grinder (Alta Visibilidad)</button>
+        </div>
+        <button class="start-btn" onclick="closeSettingsModal()">CERRAR Y GUARDAR</button>
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 0. VARIABLES GLOBALES Y ESTADO DEL JUGADOR (usando sessionStorage)
+    // --------------------------------------------------------------
+    let handCounter = 0;
+    let onboardingDone = sessionStorage.getItem('onboardingDone') === 'true';
+    
+    let playerStats = {
+        attack: { correctCount: 0, unlocked: ["btn"] },
+        defense: { correctCount: 0, unlocked: [] },
+        counter: { correctCount: 0, unlocked: [] },
+        mission1Complete: false,
+        mission2Complete: false,
+        mission3Complete: false,
+        mission4Complete: false,
+        mission5Complete: false,
+        modernUnlocked: false,
+        premiumUnlocked: false,
+        coUnlocked: false,
+        defenseUnlocked: false
+    };
+
+    let currentMode = "attack";
+    let currentPositionKey = "btn";
+    let currentMinPI = 0;
+    let currentTooltip = "";
+    let preflopIndex = 0;
+    let preflopScore = 0;
+    let currentBankroll = 100.00;
+    let currentFocus = 100;
+    let pendingCaptcha = false;
+    let bottleGameActive = false;
+    let currentDeckStyle = sessionStorage.getItem('plo5_deck_style') || 'classic';
+
+    const positionData = {
+        attack: {
+            name: "⚔️ ATAQUE",
+            positions: {
+                utg: { name: "UTG", minPI: 70, unlocked: false, required: 0 },
+                mp:  { name: "MP",  minPI: 60, unlocked: false, required: 3 },
+                co:  { name: "CO",  minPI: 50, unlocked: false, required: 0 },
+                btn: { name: "BT",   minPI: 0,  unlocked: true,  required: 0 },
+                sb:  { name: "SB",  minPI: 80, unlocked: false, required: 10 }
+            },
+            tooltips: {}
+        },
+        defense: { name: "🛡️ DEFENSA", positions: { utg: {minPI:65}, mp:{minPI:55}, co:{minPI:45}, btn:{minPI:40}, sb:{minPI:35} }, tooltips:{} },
+        counter: { name: "⚡ CONTRAATAQUE", positions: { utg:{minPI:75}, mp:{minPI:65}, co:{minPI:55}, btn:{minPI:50}, sb:{minPI:45} }, tooltips:{} }
+    };
+
+    const preflopHands = [
+        { cards: ["A♦","K♣","5♣","3♠","2♥"], minPI: -7, explanation: "Wheel parcial con A high pero mala conectividad → mano débil pese al As." },
+        { cards: ["A♦","J♦","6♦","4♣","3♦"], minPI: -15, explanation: "Multi-suited engañosa → sin estructura ni conectividad real." },
+        { cards: ["A♥","T♦","8♠","7♠","3♣"], minPI: 10, explanation: "Conectividad media + doble palo → jugable en BTN." },
+        { cards: ["A♣","Q♣","8♦","8♥","2♣"], minPI: 1, explanation: "Pareja media + A suited → marginal." },
+        { cards: ["K♦","T♦","5♥","4♥","2♦"], minPI: -17, explanation: "Suited múltiple pero sin coordinación → trampa." },
+        { cards: ["A♦","K♦","9♦","8♦","5♦"], minPI: 11, explanation: "Nut suit + conectividad útil → mano fuerte BTN." },
+        { cards: ["K♣","Q♦","4♦","4♣","2♥"], minPI: -19, explanation: "Doble pareja baja + desconexión → muy mala." },
+        { cards: ["J♦","T♠","7♥","7♦","4♥"], minPI: -6, explanation: "Pareja media con conectividad insuficiente." },
+        { cards: ["K♦","9♥","8♣","8♦","2♥"], minPI: -18, explanation: "Pareja media con conectividad débil." },
+        { cards: ["J♣","T♠","T♥","7♥","5♦"], minPI: 7, explanation: "TT + conectividad media → jugable." },
+        { cards: ["J♣","9♠","T♥","7♥","5♦"], minPI: -14, explanation: "Conectividad aparente pero rota." },
+        { cards: ["Q♣","T♣","8♣","7♦","4♦"], minPI: 9, explanation: "Double suited + conectividad media." },
+        { cards: ["Q♣","9♦","6♦","5♣","5♦"], minPI: -17, explanation: "Pareja baja + conectividad pobre." },
+        { cards: ["K♥","T♣","T♦","6♠","4♠"], minPI: -1, explanation: "TT con acompañamiento débil." },
+        { cards: ["A♦","8♥","3♣","2♦","2♥"], minPI: -19, explanation: "Wheel sucio + pareja baja." },
+        { cards: ["Q♣","Q♦","J♠","J♣","J♥"], minPI: 10, explanation: "Full house potencial." },
+        { cards: ["A♦","J♦","9♣","8♦","3♦"], minPI: 6, explanation: "A suited con conectividad media." },
+        { cards: ["K♦","Q♠","J♠","7♥","5♣"], minPI: 5, explanation: "Broadway parcial." },
+        { cards: ["K♦","K♣","7♥","2♠","2♥"], minPI: -3, explanation: "Doble pareja alta-baja sin conectividad." },
+        { cards: ["Q♣","T♣","9♦","5♥","3♣"], minPI: -19, explanation: "Conectividad rota + gaps." }
+    ];
+
+    const bankrollEl = document.getElementById('bankrollDisplay');
+    const lastTxEl = document.getElementById('lastTx');
+    const lifeBarEl = document.getElementById('lifeBar');
+    const hpValueEl = document.getElementById('hpValue');
+    const modulePreflop = document.getElementById('modulePreflop');
+    const moduleCaptcha = document.getElementById('moduleCaptcha');
+    const settingsModal = document.getElementById('settingsModal');
+
+    // --------------------------------------------------------------
+    // FUNCIONES DE PROGRESO (sessionStorage)
+    // --------------------------------------------------------------
+    function saveProgress() {
+        const data = {
+            attack: { correctCount: playerStats.attack.correctCount, unlocked: playerStats.attack.unlocked },
+            defense: { correctCount: playerStats.defense.correctCount, unlocked: playerStats.defense.unlocked },
+            counter: { correctCount: playerStats.counter.correctCount, unlocked: playerStats.counter.unlocked },
+            mission1Complete: playerStats.mission1Complete,
+            mission2Complete: playerStats.mission2Complete,
+            mission3Complete: playerStats.mission3Complete,
+            mission4Complete: playerStats.mission4Complete,
+            mission5Complete: playerStats.mission5Complete,
+            modernUnlocked: playerStats.modernUnlocked,
+            premiumUnlocked: playerStats.premiumUnlocked,
+            coUnlocked: playerStats.coUnlocked,
+            defenseUnlocked: playerStats.defenseUnlocked
+        };
+        sessionStorage.setItem("plo5_trainer_progress", JSON.stringify(data));
+    }
+
+    function loadProgress() {
+        const saved = sessionStorage.getItem("plo5_trainer_progress");
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                playerStats.attack.correctCount = data.attack?.correctCount || 0;
+                playerStats.attack.unlocked = data.attack?.unlocked || ["btn"];
+                playerStats.defense.correctCount = data.defense?.correctCount || 0;
+                playerStats.defense.unlocked = data.defense?.unlocked || [];
+                playerStats.counter.correctCount = data.counter?.correctCount || 0;
+                playerStats.counter.unlocked = data.counter?.unlocked || [];
+                playerStats.mission1Complete = data.mission1Complete || false;
+                playerStats.mission2Complete = data.mission2Complete || false;
+                playerStats.mission3Complete = data.mission3Complete || false;
+                playerStats.mission4Complete = data.mission4Complete || false;
+                playerStats.mission5Complete = data.mission5Complete || false;
+                playerStats.modernUnlocked = data.modernUnlocked || false;
+                playerStats.premiumUnlocked = data.premiumUnlocked || false;
+                playerStats.coUnlocked = data.coUnlocked || false;
+                playerStats.defenseUnlocked = data.defenseUnlocked || false;
+                if (playerStats.mission2Complete && !playerStats.attack.unlocked.includes("co")) playerStats.attack.unlocked.push("co");
+                if (playerStats.mission3Complete) ["utg","mp","sb"].forEach(pos => { if (!playerStats.attack.unlocked.includes(pos)) playerStats.attack.unlocked.push(pos); });
+                if (playerStats.mission4Complete && playerStats.defense.unlocked.length === 0) playerStats.defense.unlocked = ["utg","mp","co","btn","sb"];
+                if (playerStats.mission1Complete) { playerStats.modernUnlocked = true; playerStats.premiumUnlocked = true; }
+            } catch(e) {}
+        }
+        refreshConsole();
+    }
+
+    function updateUnlocks() { saveProgress(); refreshConsole(); }
+
+    // --------------------------------------------------------------
+    // CONSOLA Y NAVEGACIÓN (sin cambios)
+    // --------------------------------------------------------------
+    function refreshConsole() {
+        const modeRow = document.getElementById('modeRow');
+        const posRow = document.getElementById('positionRow');
+        if (!modeRow) return;
+        
+        const modes = [
+            { key: 'attack', label: 'ATAQUE', unlocked: true },
+            { key: 'defense', label: 'DEFENSA', unlocked: playerStats.defenseUnlocked },
+            { key: 'counter', label: 'CONTRAATAQUE', unlocked: false }
+        ];
+        modeRow.innerHTML = '';
+        modes.forEach(m => {
+            const btn = document.createElement('button');
+            btn.textContent = `${m.label} ${m.unlocked ? '🔓' : '🔐'}`;
+            btn.className = `console-btn ${m.unlocked ? 'unlocked' : 'locked'}`;
+            if (m.unlocked) {
+                btn.onclick = () => switchMode(m.key);
+            } else {
+                btn.onclick = () => {
+                    if (m.key === 'defense') showToast("Completa la Misión 4 (llegar a $300) para desbloquear DEFENSA.");
+                    else showPremiumUpsellModal();
+                };
+            }
+            if (currentMode === m.key) btn.classList.add('active');
+            modeRow.appendChild(btn);
+        });
+        
+        const positions = positionData[currentMode].positions;
+        const posKeys = ['utg', 'mp', 'co', 'btn', 'sb'];
+        posRow.innerHTML = '';
+        posKeys.forEach(pKey => {
+            const pos = positions[pKey];
+            if (!pos) return;
+            const isUnlocked = playerStats[currentMode].unlocked.includes(pKey);
+            const btn = document.createElement('button');
+            btn.textContent = `${pos.name} ${isUnlocked ? '🔓' : '🔐'}`;
+            btn.className = `console-btn ${isUnlocked ? 'unlocked' : 'locked'}`;
+            if (isUnlocked) {
+                btn.onclick = () => switchPosition(pKey);
+            } else {
+                btn.onclick = () => {
+                    if (pKey === 'co') showToast("Desbloquea CO completando la Misión 2 (llegar a $150).");
+                    else if (pKey === 'mp' || pKey === 'utg' || pKey === 'sb') showToast("Desbloquea más posiciones completando la Misión 3 (llegar a $200).");
+                    else showToast("Completa las misiones para desbloquear esta posición.");
+                };
+            }
+            if (currentPositionKey === pKey) btn.classList.add('active');
+            posRow.appendChild(btn);
+        });
+    }
+
+    function showToast(msg) { alert(msg); }
+    
+    function switchMode(modeKey) {
+        if (modeKey === 'attack') {
+            currentMode = modeKey;
+            currentPositionKey = "btn";
+            updateCurrentPositionData();
+            resetSession();
+            refreshConsole();
+        } else if (modeKey === 'defense' && playerStats.defenseUnlocked) {
+            currentMode = modeKey;
+            currentPositionKey = "utg";
+            updateCurrentPositionData();
+            resetSession();
+            refreshConsole();
+        } else {
+            showToast("Modo no disponible. Completa las misiones o adquiere la versión PRO.");
+        }
+    }
+    
+    function switchPosition(posKey) {
+        if (playerStats[currentMode].unlocked.includes(posKey)) {
+            currentPositionKey = posKey;
+            updateCurrentPositionData();
+            resetSession();
+            refreshConsole();
+        } else {
+            if (posKey === 'co') showToast("Desbloquea CO completando la Misión 2 (llegar a $150).");
+            else if (posKey === 'mp' || posKey === 'utg' || posKey === 'sb') showToast("Desbloquea más posiciones completando la Misión 3 (llegar a $200).");
+            else showToast("Completa las misiones para desbloquear esta posición.");
+        }
+    }
+    
+    function updateCurrentPositionData() {
+        const pos = positionData[currentMode].positions[currentPositionKey];
+        currentMinPI = pos.minPI;
+        currentTooltip = positionData[currentMode].tooltips?.[currentPositionKey] || "";
+        const nickSpan = document.getElementById('playerNickDisplay');
+        const baseNick = nickSpan.innerHTML.split(' (')[0];
+        nickSpan.innerHTML = `${baseNick} (${pos.name})`;
+    }
+    
+    function resetSession() { preflopIndex = 0; preflopScore = 0; renderPreflopHand(); updateUI(); }
+    
+    // --------------------------------------------------------------
+    // FUNCIONES DEL JUEGO
+    // --------------------------------------------------------------
+    function updateUI() { 
+        bankrollEl.textContent = `$ ${currentBankroll.toFixed(2)}`; 
+        const focusPercent = Math.max(0, currentFocus); 
+        lifeBarEl.style.width = `${focusPercent}%`; 
+        hpValueEl.textContent = `${Math.floor(focusPercent)}%`; 
+        if (focusPercent < 30) lifeBarEl.classList.add('low-hp'); 
+        else lifeBarEl.classList.remove('low-hp'); 
+        document.getElementById('preflopScore').textContent = `🎯 ACIERTOS: ${preflopScore}`; 
+    }
+
+    function updateBankrollAndFocus(ev, isCorrect) {
+        const absEV = Math.abs(ev);
+        let cambio = absEV / 100;
+        if (!isCorrect) cambio = -cambio * 1.5;
+        currentBankroll += cambio;
+        if (currentBankroll < 0) currentBankroll = 0;
+        checkMissions();
+        lastTxEl.className = `last-tx ${cambio >= 0 ? 'tx-positive' : 'tx-negative'}`;
+        lastTxEl.textContent = `${cambio >= 0 ? '+' : '-'}$${Math.abs(cambio).toFixed(2)} EV`;
+        bankrollEl.style.transform = 'scale(1.1)';
+        setTimeout(() => { bankrollEl.style.transform = 'scale(1)'; }, 300);
+        const focusDelta = isCorrect ? 5 : -15;
+        currentFocus = Math.min(100, Math.max(0, currentFocus + focusDelta));
+        updateUI();
+        if (currentFocus <= 25 && !pendingCaptcha && !bottleGameActive) triggerCaptchaBreak();
+    }
+
+    // MODAL DE MARKETING PARA DESGLOSE
+    function showBreakdownModal(hand) {
+        const modal = document.createElement('div');
+        modal.id = "breakdownModal";
+        modal.style = `position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20003; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(15px);`;
+        const evText = hand.minPI > 0 ? `+${hand.minPI} BB` : `${hand.minPI} BB`;
+        // CAMBIA ESTA URL POR LA TUYA (WhatsApp, carta de venta, etc.)
+        const marketingLink = "https://wa.me/123456789?text=Quiero%20el%20entrenador%20PRO";
+        modal.innerHTML = `
+            <div class="settings-card" style="max-width: 350px; border: 2px solid var(--accent);">
+                <h3 style="color:var(--accent);">📊 DESGLOSE DE LA MANO</h3>
+                <div style="text-align:left; margin-top:15px;">
+                    <p><strong>EV estimado:</strong> ${evText}</p>
+                    <p><strong>Análisis:</strong> ${hand.explanation}</p>
+                    <p style="margin-top:15px; font-size:12px; color:var(--good);">🎁 ¿Quieres análisis más profundos y un coach personal?</p>
+                </div>
+                <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+                    <a href="${marketingLink}" target="_blank" class="start-btn" style="text-align:center; text-decoration:none;">🔥 ACCEDER AL CURSO COMPLETO</a>
+                    <button class="next-btn" onclick="this.closest('#breakdownModal').remove()">CERRAR</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    function showPreflopFeedback(isCorrect, explanation, hand) { 
+        const feedbackDiv = document.getElementById('preflopFeedback'); 
+        feedbackDiv.classList.remove('hidden'); 
+        feedbackDiv.style.background = isCorrect ? "rgba(45,212,191,0.15)" : "rgba(248,113,113,0.15)"; 
+        feedbackDiv.style.border = `1px solid ${isCorrect ? 'var(--good)' : 'var(--bad)'}`; 
+        feedbackDiv.innerHTML = `
+            <div style="color:${isCorrect ? 'var(--good)' : 'var(--bad)'}; font-weight:bold; margin-bottom:6px;">
+                ${isCorrect ? '✓ CORRECTO' : '✗ ERROR'}
+            </div>
+            <div style="font-size:0.85em; line-height:1.3; margin-bottom:10px;">${explanation}</div>
+            <div style="text-align:right;">
+                <button class="breakdown-btn" onclick="showBreakdownModal(${JSON.stringify(hand).replace(/"/g, '&quot;')})" style="background:rgba(243,186,47,0.2); border:1px solid var(--accent); border-radius:20px; padding:4px 12px; font-size:11px; color:var(--accent); cursor:pointer;">📊 Desglose</button>
+            </div>
+        `; 
+        document.getElementById('preflopActions').classList.add('hidden'); 
+        document.getElementById('nextPreflopBtn').classList.remove('hidden'); 
+    }
+
+    function renderPreflopHand() {
+        const hand = preflopHands[preflopIndex];
+        const container = document.getElementById('preflopHand');
+        container.innerHTML = '';
+        hand.cards.forEach(card => {
+            const rank = card.slice(0, -1);
+            let suit = card.slice(-1);
+            let suitClass = '';
+            if (suit === '♠') suitClass = 's';
+            else if (suit === '♥') suitClass = 'h';
+            else if (suit === '♦') suitClass = 'd';
+            else if (suit === '♣') suitClass = 'c';
+            else suitClass = 'c';
+            const div = document.createElement('div');
+            div.className = `card-chip ${currentDeckStyle} ${suitClass}`;
+            if (currentDeckStyle === 'grinder') {
+                div.innerHTML = `<div class="grinder-top-left"><span class="grinder-rank-small">${rank}</span><span class="grinder-suit-small">${suit}</span></div><div class="grinder-rank-large">${rank}</div>`;
+            } else {
+                div.innerHTML = rank + `<small>${suit}</small>`;
+            }
+            container.appendChild(div);
+        });
+        document.getElementById('preflopFeedback').classList.add('hidden');
+        document.getElementById('preflopActions').classList.remove('hidden');
+        document.getElementById('nextPreflopBtn').classList.add('hidden');
+    }
+
+    function makePreflopDecision(decision) {
+        if (pendingCaptcha || bottleGameActive) return;
+        const hand = preflopHands[preflopIndex];
+        const isCorrect = (decision === 'OR' && hand.minPI >= currentMinPI) || (decision === 'FOLD' && hand.minPI < currentMinPI);
+        if (isCorrect) { preflopScore++; playerStats[currentMode].correctCount++; updateUnlocks(); }
+        showPreflopFeedback(isCorrect, hand.explanation, hand);
+        updateBankrollAndFocus(hand.minPI, isCorrect);
+    }
+
+    // --------------------------------------------------------------
+    // SISTEMA DE MISIONES
+    // --------------------------------------------------------------
+    function checkMissions() {
+        if (!playerStats.mission1Complete && currentBankroll >= 101) {
+            playerStats.mission1Complete = true;
+            playerStats.modernUnlocked = true;
+            playerStats.premiumUnlocked = true;
+            saveProgress();
+            showSharkCelebration();
+        }
+        if (!playerStats.mission2Complete && currentBankroll >= 150) {
+            playerStats.mission2Complete = true;
+            playerStats.coUnlocked = true;
+            if (!playerStats.attack.unlocked.includes("co")) playerStats.attack.unlocked.push("co");
+            saveProgress();
+            showMissionCompleteModal(2, "¡Has desbloqueado la posición CO en ATAQUE!");
+            refreshConsole();
+        }
+        if (!playerStats.mission3Complete && currentBankroll >= 200) {
+            playerStats.mission3Complete = true;
+            ["utg", "mp", "sb"].forEach(pos => { if (!playerStats.attack.unlocked.includes(pos)) playerStats.attack.unlocked.push(pos); });
+            saveProgress();
+            showMissionCompleteModal(3, "¡Has desbloqueado todas las posiciones de ATAQUE (UTG, MP, SB)!");
+            refreshConsole();
+        }
+        if (!playerStats.mission4Complete && currentBankroll >= 300) {
+            playerStats.mission4Complete = true;
+            playerStats.defenseUnlocked = true;
+            playerStats.defense.unlocked = ["utg", "mp", "co", "btn", "sb"];
+            saveProgress();
+            showMissionCompleteModal(4, "¡Has desbloqueado el modo DEFENSA!");
+            refreshConsole();
+        }
+        if (!playerStats.mission5Complete && currentBankroll >= 500) {
+            playerStats.mission5Complete = true;
+            saveProgress();
+            showPremiumUpsellModal();
+        }
+    }
+
+    function showMissionCompleteModal(missionNumber, message) {
+        const modal = document.createElement('div');
+        modal.id = "missionCompleteModal";
+        modal.style = `position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20002; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(15px);`;
+        modal.innerHTML = `<div class="settings-card" style="border:2px solid var(--good); max-width:350px;"><h2 style="color:var(--good);">🎉 MISIÓN ${missionNumber} CUMPLIDA</h2><p style="margin:20px 0;">${message}</p><button class="start-btn" onclick="this.closest('#missionCompleteModal').remove()">¡CONTINUAR!</button></div>`;
+        document.body.appendChild(modal);
+        setTimeout(() => modal.remove(), 4000);
+    }
+
+    function showPremiumUpsellModal() {
+        const modal = document.createElement('div');
+        modal.id = "premiumUpsellModal";
+        modal.style = `position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:20002; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(15px);`;
+        modal.innerHTML = `<div class="settings-card" style="border:3px solid var(--accent); max-width:380px;"><h2 style="color:var(--accent);">🏆 ¡ERES UN TIBURÓN!</h2><p style="margin:15px 0;">Has completado todas las misiones gratuitas. Ahora tienes acceso a:</p><ul style="text-align:left; margin:15px 0; padding-left:20px;"><li>✅ Todas las posiciones de ATAQUE y DEFENSA</li><li>✅ Barajas Moderna y Grinder</li></ul><p style="color:var(--good);">Pero el verdadero poder está en la versión PRO:</p><ul style="text-align:left; margin:15px 0; padding-left:20px;"><li>🔓 Entrenador interactivo con feedback en tiempo real</li><li>🔓 Modo CONTRAATAQUE (3bet ranges)</li><li>🔓 Coach personal integrado</li><li>🔓 Cursos, videos, ebooks y material exclusivo</li></ul><button class="start-btn" onclick="window.open('https://tupagina.com/carta-de-venta', '_blank')" style="background:var(--accent); margin-bottom:10px;">🔥 DESBLOQUEAR PRO AHORA</button><button class="next-btn" onclick="this.closest('#premiumUpsellModal').remove()">SEGUIR EN FREE</button></div>`;
+        document.body.appendChild(modal);
+    }
+
+    // ========== CELEBRACIÓN CON TIBURÓN ==========
+    function showSharkCelebration() {
+        const sharkOverlay = document.createElement('div');
+        sharkOverlay.id = "sharkOverlay";
+        sharkOverlay.style = `position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(20px);`;
+        sharkOverlay.innerHTML = `<div id="sharkContainer" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; transform: scale(0); transition: transform 1.2s cubic-bezier(0.34, 1.2, 0.64, 1);"><img src="https://i.postimg.cc/DyZmXCrw/Tiburon.png" style="max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 0 20px var(--accent));"></div>`;
+        document.body.appendChild(sharkOverlay);
+        setTimeout(() => { const sc = document.getElementById('sharkContainer'); if (sc) sc.style.transform = 'scale(1)'; }, 50);
+        setTimeout(() => { sharkOverlay.remove(); showCelebrationModal(); }, 1300);
+    }
+
+    function showCelebrationModal() {
+        const celebrationModal = document.createElement('div');
+        celebrationModal.id = "celebrationModal";
+        celebrationModal.style = `position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20001; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(20px); animation: fadeIn 0.3s ease-out;`;
+        celebrationModal.innerHTML = `<div style="background: linear-gradient(145deg, #0f172a, #020617); border: 3px solid var(--accent); border-radius: 48px; padding: 40px 25px; max-width: 380px; text-align: center; box-shadow: 0 0 50px rgba(243,186,47,0.6); animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);"><img src="https://i.postimg.cc/DyZmXCrw/Tiburon.png" style="width: 120px; margin-bottom: 20px; animation: shake 0.8s infinite;"><h2 style="color: var(--accent); font-size: 32px; font-weight: 900; text-transform: uppercase;">¡NUEVO TIBURÓN!</h2><p style="color: #e6eef7; margin: 15px 0; font-size: 16px;">Has dominado el BTN. Las barajas <b>Moderna</b> y <b>Grinder</b> son tuyas.</p><div style="display: flex; justify-content: center; gap: 10px; margin: 25px 0;"><div class="card-chip modern d" style="transform: rotate(-10deg);">A<small>♦</small></div><div class="card-chip grinder s" style="transform: rotate(10deg); border: 2px solid gold;">A</div></div><button onclick="closeCelebrationModal()" class="start-btn" style="width:100%; padding:15px; font-size:18px;">¡A COBRAR!</button></div>`;
+        if (!document.querySelector('#celebrationStyles')) {
+            const style = document.createElement('style');
+            style.id = 'celebrationStyles';
+            style.textContent = `@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes bounceIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.05)}70%{transform:scale(0.95)}100%{transform:scale(1);opacity:1}}@keyframes shake{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}`;
+            document.head.appendChild(style);
+        }
+        document.body.appendChild(celebrationModal);
+    }
+
+    function closeCelebrationModal() {
+        const modal = document.getElementById('celebrationModal');
+        if (modal) modal.remove();
+        if (settingsModal.style.display === 'flex') {
+            const visibleTitle = settingsModal.querySelector('h3')?.innerText;
+            if (visibleTitle === '🎨 APARIENCIA') renderAppearance();
+            else if (visibleTitle === '🏆 MISIONES') renderMissions();
+        }
+    }
+
+    // --------------------------------------------------------------
+    // ONBOARDING Y MODAL DE MISIÓN 1 (con redirección en pago)
+    // --------------------------------------------------------------
+    function startMission(isPaid) {
+        if (isPaid) {
+            // Redirigir a la carta de venta (cambia URL)
+            window.open("https://tupagina.com/carta-de-venta", "_blank");
+            return; // No desbloqueamos automáticamente, la compra se hace en la página externa
+        }
+        onboardingDone = true;
+        sessionStorage.setItem('onboardingDone', 'true');
+        const modal = document.getElementById('missionModal');
+        if (modal) modal.remove();
+        loadNextPreflopHand();
+    }
+
+    function showMissionOneModal() {
+        if (playerStats.mission1Complete) return;
+        const modal = document.createElement('div');
+        modal.id = "missionModal";
+        modal.style = "position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:5000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(15px);";
+        modal.innerHTML = `<div class="settings-card" style="border:2px solid var(--accent); width:95%; max-width:400px; padding:25px; background:var(--card); border-radius:28px; text-align:center;"><h2 style="color:var(--accent);">🎁 PACK DE BIENVENIDA</h2><p style="font-size:12px; margin-bottom:20px; color:#8aa0b6;">Completa tu primera misión y recibe el kit profesional.</p><div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:20px;"><div class="card-chip modern s">A<small>♠</small></div><div class="card-chip modern h">A<small>♥</small></div><div class="card-chip modern d">A<small>♦</small></div><div class="card-chip modern c">A<small>♣</small></div></div><div style="text-align:left; gap:10px; display:flex; flex-direction:column;"><div style="border:1px solid var(--good); padding:15px; border-radius:15px; background:rgba(45,212,191,0.05);"><p style="font-weight:bold; color:var(--good); font-size:14px;">MISIÓN: GRINDER EXPERTO</p><p style="font-size:11px; color:#e6eef7;">Gana $3 EV para desbloquear las barajas Moderna y Grinder.</p><button class="next-btn" onclick="startMission(false)" style="margin-top:10px; width:100%; border:none; background:var(--good); color:black; padding:10px; border-radius:40px; font-weight:bold; cursor:pointer;">ACEPTAR MISIÓN</button></div><button class="start-btn" onclick="startMission(true)" style="width:100%; background:var(--accent); color:black; border:none; padding:12px; border-radius:40px; font-weight:800; cursor:pointer;">DESBLOQUEAR TODO YA ($)</button></div></div>`;
+        document.body.appendChild(modal);
+    }
+
+    function loadNextPreflopHand() {
+        handCounter++;
+        if (handCounter === 3 && !onboardingDone) {
+            showMissionOneModal();
+            return;
+        }
+        preflopIndex = (preflopIndex + 1) % preflopHands.length;
+        renderPreflopHand();
+    }
+
+    // --------------------------------------------------------------
+    // PERFIL Y MODAL DE CONFIGURACIÓN
+    // --------------------------------------------------------------
+    function openSettingsModal() {
+        settingsModal.style.display = 'flex';
+        renderProfileMain();
+    }
+
+    function closeSettingsModal() { settingsModal.style.display = 'none'; }
+
+    function renderProfileMain() {
+        const container = settingsModal.querySelector('.settings-card');
+        container.innerHTML = `<h3 style="color:var(--accent);">👤 PERFIL</h3><div style="margin:20px 0; display:grid; gap:12px;"><button class="deck-option" onclick="renderAppearance()">🎨 APARIENCIA</button><button class="deck-option" onclick="renderMissions()">🏆 MISIONES</button><button class="start-btn" onclick="closeSettingsModal()" style="margin-top:10px;">CERRAR</button></div>`;
+    }
+
+    function renderAppearance() {
+        const isModernUnlocked = playerStats.modernUnlocked;
+        const isGrinderUnlocked = playerStats.premiumUnlocked;
+        const container = settingsModal.querySelector('.settings-card');
+        container.innerHTML = `
+            <h3 style="color:var(--accent);">🎨 APARIENCIA</h3>
+            <div style="margin:15px 0; display:grid; gap:10px;">
+                <button class="deck-option" onclick="setDeckStyle('classic')">🃏 Clásica ${currentDeckStyle === 'classic' ? '✅' : ''}</button>
+                <button class="deck-option ${!isModernUnlocked ? 'locked' : ''}" onclick="${isModernUnlocked ? "setDeckStyle('modern')" : "showMissionOneModal()"}">
+                    🎨 Moderna ${isModernUnlocked ? '🔓' : '🔐'}
+                </button>
+                <button class="deck-option ${!isGrinderUnlocked ? 'locked' : ''}" onclick="${isGrinderUnlocked ? "setDeckStyle('grinder')" : "showMissionOneModal()"}">
+                    ⚡ Grinder ${isGrinderUnlocked ? '🔓' : '🔐'}
+                </button>
+            </div>
+            <button class="next-btn" onclick="renderProfileMain()" style="width:100%;">⬅️ VOLVER</button>
+        `;
+    }
+
+    function renderMissions() {
+        const goal1 = 3, goal2 = 150, goal3 = 200, goal4 = 300, goal5 = 500;
+        const progress1 = Math.min(100, (Math.max(0, currentBankroll - 100) / goal1) * 100);
+        const progress2 = Math.min(100, (Math.max(0, currentBankroll - 100) / (goal2 - 100)) * 100);
+        const progress3 = Math.min(100, (Math.max(0, currentBankroll - 100) / (goal3 - 100)) * 100);
+        const progress4 = Math.min(100, (Math.max(0, currentBankroll - 100) / (goal4 - 100)) * 100);
+        const progress5 = Math.min(100, (Math.max(0, currentBankroll - 100) / (goal5 - 100)) * 100);
+        const container = settingsModal.querySelector('.settings-card');
+        container.innerHTML = `<h3 style="color:var(--accent);">🏆 MISIONES</h3><div style="margin:20px 0; text-align:left; max-height:400px; overflow-y:auto; padding-right:5px;">
+            ${renderMissionItem(1, "Grinder Experto", "Gana $3 EV", progress1, playerStats.mission1Complete, "Desbloquea barajas Moderna y Grinder")}
+            ${renderMissionItem(2, "Aprendiz de CO", "Llega a $150", progress2, playerStats.mission2Complete, "Desbloquea posición CO en ATAQUE")}
+            ${renderMissionItem(3, "Maestro del ATAQUE", "Llega a $200", progress3, playerStats.mission3Complete, "Desbloquea UTG, MP, SB en ATAQUE")}
+            ${renderMissionItem(4, "Guardia de Defensa", "Llega a $300", progress4, playerStats.mission4Complete, "Desbloquea modo DEFENSA")}
+            ${renderMissionItem(5, "Tiburón Premium", "Llega a $500", progress5, playerStats.mission5Complete, "Acceso a contenido PRO (pago)")}
+        </div><button class="next-btn" onclick="renderProfileMain()" style="width:100%;">⬅️ VOLVER</button>`;
+    }
+
+    function renderMissionItem(num, title, condition, progress, completed, reward) {
+        const status = completed ? '✅ COMPLETADA' : `⚡ Progreso: ${Math.floor(progress)}%`;
+        const color = completed ? 'var(--good)' : 'var(--accent)';
+        return `<div style="border:1px solid ${color}; border-radius:16px; padding:12px; margin-bottom:15px; background:rgba(0,0,0,0.3);"><p style="font-weight:bold; color:${color};">MISIÓN ${num}: ${title}</p><p style="font-size:11px;">${condition}</p><div class="life-bar-bg" style="margin:8px 0;"><div class="life-bar-fill" style="width:${progress}%; background:${color};"></div></div><p style="font-size:10px; text-align:right;">${status}</p><p style="font-size:10px; margin-top:5px;">🎁 ${reward}</p></div>`;
+    }
+
+    function setDeckStyle(style) {
+        currentDeckStyle = style;
+        sessionStorage.setItem('plo5_deck_style', style);
+        renderPreflopHand();
+        if (settingsModal.style.display === 'flex' && settingsModal.querySelector('h3')?.innerText === '🎨 APARIENCIA') {
+            renderAppearance();
+        }
+    }
+
+    // --------------------------------------------------------------
+    // CAPTCHA
+    // --------------------------------------------------------------
+    let refineryData = [], selectedBottle = null;
+    function initBottleGame() { bottleGameActive=true; pendingCaptcha=false; selectedBottle=null; refineryData=[['color-1','color-2','color-3','color-1'],['color-3','color-1','color-2','color-3'],['color-2','color-3','color-1','color-2'],[]]; renderRefinery(); document.getElementById('puzzleStatus').innerHTML="⚡ REFINANDO ENERGÍA MENTAL...<br><small>Toca una botella y luego otra para mover el color superior</small>"; }
+    function renderRefinery() { const wrapper=document.getElementById('bottlesWrapper'); wrapper.innerHTML=''; refineryData.forEach((layers,idx)=>{ const bottleDiv=document.createElement('div'); bottleDiv.className='bottle'; if(selectedBottle===idx) bottleDiv.classList.add('selected'); if(layers.length===4 && layers.every(l=>l===layers[0])) bottleDiv.classList.add('bottle-complete'); bottleDiv.onclick=()=>onRefineryClick(idx); layers.forEach(colorClass=>{ const layer=document.createElement('div'); layer.className=`liquid ${colorClass}`; bottleDiv.appendChild(layer); }); wrapper.appendChild(bottleDiv); }); }
+    function onRefineryClick(idx) { if(selectedBottle===null){ if(refineryData[idx].length>0){ selectedBottle=idx; renderRefinery(); } } else { const from=selectedBottle, to=idx; if(from!==to){ const fromLayers=refineryData[from], toLayers=refineryData[to]; if(fromLayers.length>0){ const topColor=fromLayers[fromLayers.length-1]; if(toLayers.length===0 || (toLayers[toLayers.length-1]===topColor && toLayers.length<4)){ while(fromLayers.length>0 && fromLayers[fromLayers.length-1]===topColor && toLayers.length<4){ toLayers.push(fromLayers.pop()); } } } } selectedBottle=null; renderRefinery(); checkRefineryWin(); } }
+    function checkRefineryWin() { const allComplete=refineryData.every(bottle=>bottle.length===0 || (bottle.length===4 && bottle.every(c=>c===bottle[0]))); if(allComplete){ document.getElementById('puzzleStatus').innerHTML="🎯 ¡REFINADO COMPLETO! SISTEMAS ONLINE"; setTimeout(()=>{ currentFocus=Math.min(100,currentFocus+30); updateUI(); moduleCaptcha.classList.add('hidden'); modulePreflop.classList.remove('hidden'); bottleGameActive=false; pendingCaptcha=false; document.getElementById('puzzleStatus').innerHTML=""; selectedBottle=null; },1200); } }
+    function triggerCaptchaBreak() { pendingCaptcha=true; bottleGameActive=true; modulePreflop.classList.add('hidden'); moduleCaptcha.classList.remove('hidden'); initBottleGame(); }
+
+    // --------------------------------------------------------------
+    // INICIALIZACIÓN
+    // --------------------------------------------------------------
+    let avatars = ["https://api.dicebear.com/7.x/bottts/svg?seed=BNB1","https://api.dicebear.com/7.x/bottts/svg?seed=BNB2","https://api.dicebear.com/7.x/bottts/svg?seed=BNB3","https://api.dicebear.com/7.x/bottts/svg?seed=BNB4"];
+    let currentAvatarIndex = 0;
+    document.getElementById('avatarSelector').onclick = () => { currentAvatarIndex = (currentAvatarIndex + 1) % avatars.length; document.getElementById('avatarImg').src = avatars[currentAvatarIndex]; };
+    document.getElementById('playerAvatarSmall').addEventListener('click', openSettingsModal);
+    document.getElementById('playerNickDisplay').addEventListener('click', openSettingsModal);
+
+    function startGame() {
+        let nick = document.getElementById('userNick').value.trim();
+        if (nick === "") nick = "HÉROE";
+        document.getElementById('playerNickDisplay').innerHTML = nick.toUpperCase();
+        document.getElementById('playerAvatarSmall').src = avatars[currentAvatarIndex];
+        currentMode = "attack";
+        currentPositionKey = "btn";
+        updateCurrentPositionData();
+        loadProgress();
+        document.getElementById('moduleLogin').style.display = 'none';
+        document.getElementById('mainGame').style.display = 'block';
+        const posName = positionData[currentMode].positions[currentPositionKey].name;
+        document.getElementById('playerNickDisplay').innerHTML = `${nick.toUpperCase()} (${posName})`;
+        initGame();
+    }
+
+    function initGame() { 
+        preflopIndex = 0; 
+        preflopScore = 0; 
+        currentBankroll = 100.00; 
+        currentFocus = 100; 
+        renderPreflopHand(); 
+        updateUI(); 
+        modulePreflop.classList.remove('hidden'); 
+        refreshConsole(); 
+        handCounter = 0;
+        onboardingDone = sessionStorage.getItem('onboardingDone') === 'true';
+    }
+</script>
+</html>

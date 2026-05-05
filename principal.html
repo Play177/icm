@@ -1,18 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Preflop Victory | Leo Poker R®</title>
+    <!-- Script de Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-    user-select: none;          /* Estándar */
-    -webkit-user-select: none;  /* Safari/Chrome */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* Edge antiguo */
-    -webkit-touch-callout: none; /* Evita menú en iOS al mantener presionado */
-}
         :root {
             --bg: #0b0f14;
             --card: rgba(18, 24, 38, 0.85);
@@ -22,7 +16,15 @@
             --wsp: #25D366;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             background: var(--bg);
@@ -34,9 +36,11 @@
             flex-direction: column;
             align-items: center;
             padding: 40px 20px 100px;
+            touch-action: manipulation;
+            overscroll-behavior: none;
         }
 
-        /* PERFIL (Estilo dApp) */
+        /* PERFIL  */
         .perfil-container {
             width: 120px;
             height: 120px;
@@ -46,12 +50,15 @@
             overflow: hidden;
             box-shadow: 0 0 20px rgba(243, 186, 47, 0.3);
             animation: flotar 3s ease-in-out infinite;
+            pointer-events: none; /* Evita menú en la imagen */
         }
 
         .perfil-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            pointer-events: none;
+            -webkit-user-drag: none;
         }
 
         @keyframes flotar {
@@ -62,24 +69,36 @@
         /* TEXTOS */
         h2 { color: #fff; font-size: 24px; font-weight: 800; margin-bottom: 10px; }
         h2 span { color: var(--accent); }
-        .bio-desc { color: var(--muted); font-size: 14px; text-align: center; max-width: 320px; margin-bottom: 30px; }
+        .bio-desc { 
+            color: var(--muted); 
+            font-size: 14px; 
+            text-align: center; 
+            max-width: 320px; 
+            margin-bottom: 30px; 
+        }
 
-        /* BOTONES (Copiados de tu dApp) */
+        /* BOTONES - Cambiado de <a> a <button> estilizado */
         .bio-boton {
-    display: block;
-    width: 100%;
-    max-width: 320px;
-    margin-bottom: 15px;
-    padding: 14px 24px; /* Proporción más equilibrada */
-    border-radius: 4px; /* píldora completa para marketing */
-    font-weight: 600; /* Legibilidad profesional */
-    font-size: 14px;
-    text-align: center;
-    text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    text-transform: none; 
-    letter-spacing: 0.3px;
-}
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 15px;
+            padding: 14px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: none; 
+            letter-spacing: 0.3px;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+        }
+
         .btn-basico {
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
@@ -105,154 +124,134 @@
             filter: brightness(1.1);
         }
 
-        /* FOOTER NAV (Copiado de tu dApp) */
-        .footer-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            background: rgba(11, 15, 20, 0.9);
-            padding: 15px;
+        /* GRID DE CONTACTO */
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 320px;
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        /* Estilo para los botones de contacto en Blanco y Negro */
+        .btn-contacto {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            border-top: 2px solid var(--accent);
         }
 
-        .footer-nav button {
-            background: #1e293b;
-            color: #e2e8f0;
-            border: none;
-            border-radius: 40px;
-            padding: 10px 20px;
-            font-size: 12px;
-            font-weight: bold;
+        .btn-contacto:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        /* FOOTER NAV */
+        .b1-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(11, 14, 17, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            box-shadow: 0 -10px 25px rgba(243, 186, 47, 0.08);
+            z-index: 1001;
+            height: 70px;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .footer-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .footer-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
             cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
         }
-    /* Estilo para los botones de contacto en Blanco y Negro */
-    .btn-contacto {
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-    }
 
-    .btn-contacto:hover {
-        background: #fff;
-        color: #000;
-        border-color: #fff;
-    }
+        /* Efecto de línea de vida activa al presionar */
+        .footer-item::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px var(--accent);
+        }
 
-    /* Iconos sociales simplificados */
-    .social-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        width: 100%;
-        max-width: 320px;
-        margin-top: 10px;
-    }
+        .footer-item:active {
+            background: rgba(243, 186, 47, 0.1);
+            color: var(--accent);
+        }
 
-    .btn-small {
-        padding: 12px;
-        font-size: 13px;
-    }
+        .footer-item:active::after {
+            width: 60%;
+        }
 
+        .footer-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            filter: grayscale(1) opacity(0.7);
+            transition: all 0.3s ease;
+        }
 
-/* Footer Estilo Binance Live & Glass */
-.b1-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(11, 14, 17, 0.85); /* Fondo Binance con transparencia */
-    backdrop-filter: blur(15px); /* Efecto cristal para que se vea el juego de fondo */
-    -webkit-backdrop-filter: blur(15px);
-    border-top: 1px solid var(--glass-border); /* Usando tu variable de borde */
-    box-shadow: 0 -10px 25px rgba(243, 186, 47, 0.08); /* Resplandor sutil superior */
-    z-index: 1001;
-    height: 70px;
-    padding-bottom: env(safe-area-inset-bottom); /* Soporte para iPhone notch */
-}
+        .footer-item:active .footer-icon {
+            filter: grayscale(0) opacity(1);
+            transform: translateY(-2px);
+        }
 
-.footer-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    align-items: stretch;
-}
-
-.footer-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Efecto de línea de vida activa al presionar */
-.footer-item::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-    box-shadow: 0 0 10px var(--accent);
-}
-
-.footer-item:active {
-    background: rgba(243, 186, 47, 0.1);
-    color: var(--accent);
-}
-
-.footer-item:active::after {
-    width: 60%;
-}
-
-.footer-icon {
-    font-size: 18px; /* Tamaño para emojis o iconos */
-    margin-bottom: 4px;
-    filter: grayscale(1) opacity(0.7);
-    transition: all 0.3s ease;
-}
-
-.footer-item:active .footer-icon {
-    filter: grayscale(0) opacity(1);
-    transform: translateY(-2px);
-}
-
-.footer-item.active {
-    color: var(--accent);
-    pointer-events: none;
-}
-.footer-item.active::after {
-    width: 60%;
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-}
-.footer-item.active .footer-icon {
-    filter: grayscale(0) opacity(1);
-}
-
-
+        .footer-item.active {
+            color: var(--accent);
+            pointer-events: none;
+        }
+        .footer-item.active::after {
+            width: 60%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .footer-item.active .footer-icon {
+            filter: grayscale(0) opacity(1);
+        }
     </style>
 </head>
 <body>
 
     <div class="perfil-container">
-        <img src="shark-cap-red.jpg" alt="Leo Poker">
+        <img src="shark-cap-red.jpg" alt="Leo Poker" draggable="false">
     </div>
 
     <h2>Entrenador interactivo PLO5</h2>
@@ -260,89 +259,93 @@
         Herramientas diseñadas para mejorar decisiones preflop en PLO5.
     </p>
 
-    <a href="demo.html" class="bio-boton btn-basico">🎯 Visor Básico Gratis</a>
-    <a href="carta.html" class="bio-boton btn-premium">🔓 Pack PRO + MRR</a>
+    <!-- BOTONES CAMBIADOS: <a> → <button> con data-url -->
+    <button class="bio-boton btn-basico" data-url="demo.html">🎯 Visor Básico Gratis</button>
+    <button class="bio-boton btn-premium" data-url="carta.html">🔓 Pack PRO + MRR</button>
 
-
-
-<!-- GRID DE CONTACTO MONOCROMO -->
-<div class="social-grid">
-    
-<a href="https://t.me/TuUsuario" class="bio-boton btn-contacto btn-small">✈️ Telegram</a>
-    
-<a href="https://discord.gg/TuServidor" class="bio-boton btn-contacto btn-small">🎮 Discord</a>
-</div>
-
-<a href="https://wa.me/5514981401790" class="bio-boton btn-contacto" style="width: 100%; max-width: 320px;">💬 WhatsApp</a>
-
-
-<footer class="b1-footer">
-    <div class="footer-container">
-        <a href="principal.html" class="footer-item active" aria-current="page">
-            <span class="footer-icon">🏡</span>
-            <span>Inicio</span>
-        </a>
-        <a href="demo.html" class="footer-item">
-            <span class="footer-icon">🎮</span>
-            <span>Entrenar</span>
-        </a>
-        <a href="cartav.html" class="footer-item">
-            <span class="footer-icon">📚</span>
-            <span>Curso</span>
-        </a>
+    <!-- GRID DE CONTACTO MONOCROMO -->
+    <div class="social-grid">
+        <button class="bio-boton btn-contacto btn-small" data-url="https://t.me/TuUsuario">✈️ Telegram</button>
+        <button class="bio-boton btn-contacto btn-small" data-url="https://discord.gg/TuServidor">🎮 Discord</button>
     </div>
-</footer>
     
-    <script>
+    <button class="bio-boton btn-contacto" data-url="https://wa.me/5514981401790" style="width: 100%; max-width: 320px;">💬 WhatsApp</button>
 
-     <script>
-        // Inicializar Telegram WebApp
+    <!-- FOOTER CAMBIADO: <a> → <button> -->
+    <footer class="b1-footer">
+        <div class="footer-container">
+            <button class="footer-item active" data-url="principal.html" aria-current="page">
+                <span class="footer-icon">🏡</span>
+                <span>Inicio</span>
+            </button>
+            <button class="footer-item" data-url="demo.html">
+                <span class="footer-icon">🎮</span>
+                <span>Entrenar</span>
+            </button>
+            <button class="footer-item" data-url="cartav.html">
+                <span class="footer-icon">📚</span>
+                <span>Curso</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT AL FINAL -->
+    <script>
+        // === INICIALIZACIÓN TELEGRAM WEBAPP ===
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-        tg.disableVerticalSwipes();
-        
-        // === BLOQUEO AGRESIVO DEL MENÚ CONTEXTUAL ===
-        
-        // 1. Bloquear menú contextual en todo el documento
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.disableVerticalSwipes();
+        }
+
+        // === BLOQUEAR MENÚ CONTEXTUAL AGRESIVAMENTE ===
         document.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
             return false;
         }, true);
-        
-        // 2. Para cada botón, prevenir comportamientos nativos
-        document.querySelectorAll('.footer-btn').forEach(btn => {
-            // Prevenir que el long-press active el menú de Telegram
-            btn.addEventListener('touchstart', (e) => {
-                // No prevenimos default para mantener el funcionamiento del botón
-                btn.style.webkitTouchCallout = 'none';
-            }, {passive: true});
-            
-            // Manejar el clic normal
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const action = btn.dataset.action;
-                
-                // Feedback táctil nativo (si está disponible)
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.impactOccurred('light');
-                }
-                
-                // Tu lógica aquí
-                console.log('Acción:', action);
-            });
-        });
-        
-        // 3. Bloquear en imágenes si las tienes
+
+        // Bloquear en imágenes específicamente
         document.querySelectorAll('img').forEach(img => {
             img.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
                 return false;
             });
-            img.draggable = false;
+        });
+
+        // === MANEJAR CLICS EN BOTONES ===
+        document.querySelectorAll('[data-url]').forEach(btn => {
+            // Prevenir comportamiento por defecto
+            btn.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+
+            // Manejar el clic
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = btn.getAttribute('data-url');
+                
+                // Feedback táctil nativo
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
+                
+                // Navegar
+                if (url.startsWith('http')) {
+                    // Enlaces externos: abrir en navegador
+                    if (tg) {
+                        tg.openLink(url);
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                } else {
+                    // Páginas internas: navegación normal
+                    window.location.href = url;
+                }
+            });
         });
     </script>
-
 </body>
 </html>

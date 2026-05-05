@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>PLO5 PRO | Entrenamiento definitivo de PLO5</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+
+
+
         :root {
             --bg: #0b0f14;
             --card: rgba(18,24,38,0.92);
@@ -256,6 +254,36 @@
 .footer-item.active .footer-icon {
     filter: grayscale(0) opacity(1);
 }
+
+/* Esto gana sobre casi cualquier otra regla */
+html, body, * {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-drag: none !important;
+}
+
+/* Si tienes INPUTS donde SÍ quieres escribir, quita la línea de arriba para ellos: */
+input, textarea {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+}
+
+/* Imágenes, canvas, tablas, cartas de poker */
+img, canvas, svg, table, td, tr, .carta, .ficha, .chip {
+    pointer-events: none !important;
+    -webkit-user-drag: none !important;
+    user-drag: none !important;
+}
+
+/* Si necesitas que algo sea clickeable (botones) recupera sus eventos */
+button, [role="button"], .clickable {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+}
     </style>
 </head>
 <body>
@@ -352,5 +380,65 @@
         </a>
     </div>
 </footer>
+<script>
+// === 1. Telegram WebApp (si usas) ===
+const tg = window.Telegram?.WebApp;
+if (tg) {
+    tg.ready();
+    tg.expand();
+    tg.disableVerticalSwipes();
+}
+
+// === 2. Bloqueo GLOBAL con captura (esto atrapa todo) ===
+['contextmenu', 'selectstart', 'dragstart', 'copy', 'cut', 'paste'].forEach(evt => {
+    document.addEventListener(evt, (e) => {
+        // Permitir solo en inputs/textarea si quieres que escriban
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }, true); // true = fase de captura, atrapa antes de que llegue al elemento
+});
+
+// === 3. Mutación para elementos que aparecen después ===
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) { // Elemento HTML
+                node.setAttribute('draggable', 'false');
+                if (node.tagName === 'IMG') {
+                    node.style.pointerEvents = 'none';
+                    node.style.userSelect = 'none';
+                }
+                // Si el nodo tiene hijos, aplica a todos
+                node.querySelectorAll?.('img').forEach(img => {
+                    img.setAttribute('draggable', 'false');
+                    img.style.pointerEvents = 'none';
+                });
+            }
+        });
+    });
+});
+observer.observe(document.body, { childList: true, subtree: true });
+
+// === 4. Convertir enlaces <a> peligrosos a comportamiento app ===
+document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    
+    // Si es enlace externo, abrirlo; si es interno, navegar sin menú
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    
+    if (href.startsWith('http')) {
+        tg ? tg.openLink(href) : window.open(href, '_blank');
+    } else {
+        window.location.href = href;
+    }
+}, true);
+
+</script>
 </body>
 </html>

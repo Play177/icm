@@ -1,11 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link rel="preload" href="https://play177.github.io/icm/tiburon.png" as="image">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PLO5 Ultimate Trainer | Progresión táctica</title>
+    <title>Preflop Victory | Leo Poker R®</title>
+    <!-- Script de Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
 /* Efecto de resplandor para el cajero */
 .cashier-glow-up {
@@ -715,97 +716,130 @@ body {
 
 
 /////////////////////////
-/* Footer Estilo Binance */
-/* Footer Estilo Binance Live & Glass */
-.b-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(11, 14, 17, 0.85); /* Fondo Binance con transparencia */
-    backdrop-filter: blur(15px); /* Efecto cristal para que se vea el juego de fondo */
-    -webkit-backdrop-filter: blur(15px);
-    border-top: 1px solid var(--glass-border); /* Usando tu variable de borde */
-    box-shadow: 0 -10px 25px rgba(243, 186, 47, 0.08); /* Resplandor sutil superior */
-    z-index: 1001;
-    height: 70px;
-    padding-bottom: env(safe-area-inset-bottom); /* Soporte para iPhone notch */
+
+/* Footer Live & Glass */
+        /* FOOTER NAV */
+        .b1-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(11, 14, 17, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            box-shadow: 0 -10px 25px rgba(243, 186, 47, 0.08);
+            z-index: 1001;
+            height: 70px;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .footer-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .footer-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+        }
+
+        /* Efecto de línea de vida activa al presionar */
+        .footer-item::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .footer-item:active {
+            background: rgba(243, 186, 47, 0.1);
+            color: var(--accent);
+        }
+
+        .footer-item:active::after {
+            width: 60%;
+        }
+
+        .footer-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            filter: grayscale(1) opacity(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .footer-item:active .footer-icon {
+            filter: grayscale(0) opacity(1);
+            transform: translateY(-2px);
+        }
+
+        .footer-item.active {
+            color: var(--accent);
+            pointer-events: none;
+        }
+        .footer-item.active::after {
+            width: 60%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .footer-item.active .footer-icon {
+            filter: grayscale(0) opacity(1);
+        }
+
+/* Esto gana sobre casi cualquier otra regla */
+html, body, * {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-drag: none !important;
 }
 
-.footer-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    align-items: stretch;
+/* Si tienes INPUTS donde SÍ quieres escribir, quita la línea de arriba para ellos: */
+input, textarea {
+    -webkit-user-select: text !important;
+    user-select: text !important;
 }
 
-.footer-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+/* Imágenes, canvas, tablas, cartas de poker */
+img, canvas, svg, table, td, tr, .carta, .ficha, .chip {
+    pointer-events: none !important;
+    -webkit-user-drag: none !important;
+    user-drag: none !important;
 }
 
-/* Efecto de línea de vida activa al presionar */
-.footer-item::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-    box-shadow: 0 0 10px var(--accent);
-}
-
-.footer-item:active {
-    background: rgba(243, 186, 47, 0.1);
-    color: var(--accent);
-}
-
-.footer-item:active::after {
-    width: 60%;
-}
-
-.footer-icon {
-    font-size: 18px; /* Tamaño para emojis o iconos */
-    margin-bottom: 4px;
-    filter: grayscale(1) opacity(0.7);
-    transition: all 0.3s ease;
-}
-
-.footer-item:active .footer-icon {
-    filter: grayscale(0) opacity(1);
-    transform: translateY(-2px);
-}
-.footer-item:active .footer-icon {
-    filter: grayscale(0) opacity(1);
-    transform: translateY(-2px);
-}
-
-.footer-item.active {
-    color: var(--accent);
-    pointer-events: none;
-}
-.footer-item.active::after {
-    width: 60%;
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-}
-.footer-item.active .footer-icon {
-    filter: grayscale(0) opacity(1);
+/* Si necesitas que algo sea clickeable (botones) recupera sus eventos */
+button, [role="button"], .clickable {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
 }
     </style>
 </head>
@@ -884,24 +918,23 @@ body {
     </div>
 </div>
 
-<footer class="b1-footer">
-    <div class="footer-container">
-        <a href="principal.html" class="footer-item">
-            <span class="footer-icon">🏡</span>
-            <span>Inicio</span>
-        </a>
-        <a href="#" class="footer-item">
-            <span class="footer-item active" aria-current="page">
-            <span class="footer-icon">🎮</span>
-            <span>Entrenar</span>
-        </a>
-        </a>
-               <a href="cartav.html" class="footer-item">
-            <span class="footer-icon">📚</span>
-            <span>Curso</span>
-        </a>
-    </div>
-</footer>
+    <!-- FOOTER CAMBIADO: <a> → <button> -->
+    <footer class="b1-footer">
+        <div class="footer-container">
+            <button class="footer-item" data-url="principal.html" aria-current="page">
+                <span class="footer-icon">🏡</span>
+                <span>Inicio</span>
+            </button>
+            <button class="footer-item active"  data-url="demo.html">
+                <span class="footer-icon">🎮</span>
+                <span>Entrenar</span>
+            </button>
+            <button class="footer-item" data-url="cartav.html">
+                <span class="footer-icon">📚</span>
+                <span>Curso</span>
+            </button>
+        </div>
+    </footer>
 
 <script>
     // --------------------------------------------------------------
@@ -1910,6 +1943,63 @@ function toggleTutorialItem(id) {
     handCounter = 0;
     onboardingDone = sessionStorage.getItem('onboardingDone') === 'true';
 }
+
+
+        // === INICIALIZACIÓN TELEGRAM WEBAPP ===
+        const tg = window.Telegram.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.disableVerticalSwipes();
+        }
+
+        // === BLOQUEAR MENÚ CONTEXTUAL AGRESIVAMENTE ===
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }, true);
+
+        // Bloquear en imágenes específicamente
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+        });
+
+        // === MANEJAR CLICS EN BOTONES ===
+        document.querySelectorAll('[data-url]').forEach(btn => {
+            // Prevenir comportamiento por defecto
+            btn.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+
+            // Manejar el clic
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = btn.getAttribute('data-url');
+                
+                // Feedback táctil nativo
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
+                
+                // Navegar
+                if (url.startsWith('http')) {
+                    // Enlaces externos: abrir en navegador
+                    if (tg) {
+                        tg.openLink(url);
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                } else {
+                    // Páginas internas: navegación normal
+                    window.location.href = url;
+                }
+            });
+        });
 </script>
 </body>
 </html>

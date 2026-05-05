@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
 <head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Preflop Victory | Leo Poker R®</title>
@@ -292,6 +293,27 @@
     </div>
 </footer>
 <script>
+
+ 
+        // Inicializar WebApp
+        let tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        
+        // Configurar botón principal de Telegram (opcional)
+        tg.MainButton.setText("Guardar");
+        tg.MainButton.show();
+        
+        // Tu lógica de botones
+        document.getElementById('miBoton').addEventListener('click', function(e) {
+            // Evitar comportamiento por defecto
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Tu acción aquí
+            console.log("Botón presionado sin menú de Telegram");
+        });
+ 
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('dragstart', e => e.preventDefault());
         document.addEventListener('keydown', e => {

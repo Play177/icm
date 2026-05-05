@@ -292,34 +292,55 @@
         </a>
     </div>
 </footer>
-<script>
+    
+    <script>
 
- 
-        // Inicializar WebApp
-        let tg = window.Telegram.WebApp;
+     <script>
+        // Inicializar Telegram WebApp
+        const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+        tg.disableVerticalSwipes();
         
-        // Configurar botón principal de Telegram (opcional)
-        tg.MainButton.setText("Guardar");
-        tg.MainButton.show();
+        // === BLOQUEO AGRESIVO DEL MENÚ CONTEXTUAL ===
         
-        // Tu lógica de botones
-        document.getElementById('miBoton').addEventListener('click', function(e) {
-            // Evitar comportamiento por defecto
+        // 1. Bloquear menú contextual en todo el documento
+        document.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            return false;
+        }, true);
+        
+        // 2. Para cada botón, prevenir comportamientos nativos
+        document.querySelectorAll('.footer-btn').forEach(btn => {
+            // Prevenir que el long-press active el menú de Telegram
+            btn.addEventListener('touchstart', (e) => {
+                // No prevenimos default para mantener el funcionamiento del botón
+                btn.style.webkitTouchCallout = 'none';
+            }, {passive: true});
             
-            // Tu acción aquí
-            console.log("Botón presionado sin menú de Telegram");
-        });
- 
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('dragstart', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if ((e.ctrlKey || e.metaKey) && ['c','v','x','p','s','a'].includes(e.key.toLowerCase())) {
+            // Manejar el clic normal
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
-            }
+                const action = btn.dataset.action;
+                
+                // Feedback táctil nativo (si está disponible)
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
+                
+                // Tu lógica aquí
+                console.log('Acción:', action);
+            });
+        });
+        
+        // 3. Bloquear en imágenes si las tienes
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            img.draggable = false;
         });
     </script>
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -944,19 +944,20 @@ button, [role="button"], .clickable {
     let onboardingDone = sessionStorage.getItem('onboardingDone') === 'true';
     
     let playerStats = {
-        attack: { correctCount: 0, unlocked: ["btn"] },
-        defense: { correctCount: 0, unlocked: [] },
-        counter: { correctCount: 0, unlocked: [] },
-        mission1Complete: false,
-        mission2Complete: false,
-        mission3Complete: false,
-        mission4Complete: false,
-        mission5Complete: false,
-        modernUnlocked: false,
-        premiumUnlocked: false,
-        coUnlocked: false,
-        defenseUnlocked: false
-    };
+    attack: { correctCount: 0, unlocked: ["btn"] },
+    defense: { correctCount: 0, unlocked: [] },
+    counter: { correctCount: 0, unlocked: [] },
+    mission1Complete: false,
+    mission2Complete: false,
+    mission2Ready: false,   // <-- NUEVA LÍNEA
+    mission3Complete: false,
+    mission4Complete: false,
+    mission5Complete: false,
+    modernUnlocked: false,
+    premiumUnlocked: false,
+    coUnlocked: false,
+    defenseUnlocked: false
+};
 
     let currentMode = "attack";
     let currentPositionKey = "btn";
@@ -1088,6 +1089,7 @@ button, [role="button"], .clickable {
             counter: { correctCount: playerStats.counter.correctCount, unlocked: playerStats.counter.unlocked },
             mission1Complete: playerStats.mission1Complete,
             mission2Complete: playerStats.mission2Complete,
+            mission2Ready: playerStats.mission2Ready,
             mission3Complete: playerStats.mission3Complete,
             mission4Complete: playerStats.mission4Complete,
             mission5Complete: playerStats.mission5Complete,
@@ -1112,6 +1114,7 @@ button, [role="button"], .clickable {
                 playerStats.counter.unlocked = data.counter?.unlocked || [];
                 playerStats.mission1Complete = data.mission1Complete || false;
                 playerStats.mission2Complete = data.mission2Complete || false;
+                playerStats.mission2Ready = data.mission2Ready || false;
                 playerStats.mission3Complete = data.mission3Complete || false;
                 playerStats.mission4Complete = data.mission4Complete || false;
                 playerStats.mission5Complete = data.mission5Complete || false;
@@ -1178,11 +1181,19 @@ button, [role="button"], .clickable {
             if (isUnlocked) {
                 btn.onclick = () => switchPosition(pKey);
             } else {
-                btn.onclick = () => {
-                    if (pKey === 'co') showToast("Desbloquea CO completando la Misión 2 (llegar a $150).");
-                    else if (pKey === 'mp' || pKey === 'utg' || pKey === 'sb') showToast("Desbloquea más posiciones completando la Misión 3 (llegar a $200).");
-                    else showToast("Completa las misiones para desbloquear esta posición.");
-                };
+               btn.onclick = () => {
+    if (pKey === 'co') {
+        if (playerStats.mission2Ready) {
+            showToast("🎉 ¡Ya alcanzaste el objetivo! Contáctame por WhatsApp para desbloquear CO.");
+        } else {
+            showToast("Desbloquea CO completando la Misión 2 (llegar a $107) y luego contáctame.");
+        }
+    } else if (pKey === 'mp' || pKey === 'utg' || pKey === 'sb') {
+        showToast("Desbloquea más posiciones completando la Misión 3 (llegar a $200).");
+    } else {
+        showToast("Completa las misiones para desbloquear esta posición.");
+    }
+};
             }
             if (currentPositionKey === pKey) btn.classList.add('active');
             posRow.appendChild(btn);
@@ -1399,14 +1410,13 @@ function shuffleArray(arr) {
             saveProgress();
             showSharkCelebration();
         }
-        if (!playerStats.mission2Complete && currentBankroll >= 150) {
-            playerStats.mission2Complete = true;
-            playerStats.coUnlocked = true;
-            if (!playerStats.attack.unlocked.includes("co")) playerStats.attack.unlocked.push("co");
-            saveProgress();
-            showMissionCompleteModal(2, "¡Has desbloqueado la posición CO en ATAQUE!");
-            refreshConsole();
-        }
+        if (!playerStats.mission2Complete && currentBankroll >= 107) {
+    playerStats.mission2Complete = true;
+    playerStats.mission2Ready = true;
+    saveProgress();
+    showUnlockCOModal();
+    refreshConsole();
+}
         if (!playerStats.mission3Complete && currentBankroll >= 200) {
             playerStats.mission3Complete = true;
             ["utg", "mp", "sb"].forEach(pos => { if (!playerStats.attack.unlocked.includes(pos)) playerStats.attack.unlocked.push(pos); });
@@ -1942,6 +1952,24 @@ function toggleTutorialItem(id) {
     refreshConsole(); 
     handCounter = 0;
     onboardingDone = sessionStorage.getItem('onboardingDone') === 'true';
+}
+
+function showUnlockCOModal() {
+    const modal = document.createElement('div');
+    modal.id = "unlockCOModal";
+    modal.style = `position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:20006; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(15px);`;
+    modal.innerHTML = `
+        <div class="settings-card" style="max-width:350px; border:2px solid var(--good);">
+            <h2 style="color:var(--good);">🎉 ¡OBJETIVO ALCANZADO!</h2>
+            <p style="margin:15px 0; font-size:14px;">Has conseguido $107 de bankroll. ¡Enhorabuena!</p>
+            <p style="margin:10px 0;">Para desbloquear la posición CO (y seguir mejorando), <strong>contáctame por WhatsApp</strong> y te enviaré la versión completa con el CO desbloqueado.</p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+                <a href="https://wa.me/123456789?text=Hola%2C%20he%20alcanzado%20%24107%20y%20quiero%20desbloquear%20CO" target="_blank" class="start-btn" style="background:var(--good); color:#000;">📱 CONTACTAR POR WHATSAPP</a>
+                <button class="next-btn" onclick="this.closest('#unlockCOModal').remove()">SEGUIR ENTRENANDO (SIN CO)</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 

@@ -1,13 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PLO5 PRO | Entrenamiento definitivo de PLO5</title>
+    <title>PLO5 Poker Pack | Sistema Profesional Completo</title>
     <style>
-
-
-
         :root {
             --bg: #0b0f14;
             --card: rgba(18,24,38,0.92);
@@ -33,7 +30,6 @@
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
             border: 1px solid var(--glass-border);
         }
-        /* badges */
         .badge {
             display: inline-block;
             background: rgba(45,212,191,0.1);
@@ -99,37 +95,25 @@
             color: var(--good);
         }
         .btn-primary {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--accent), #ffb347);
-            color: #000;
-            text-decoration: none;
-            font-weight: 800;
-            padding: 0.9rem 2rem;
-            border-radius: 60px;
-            font-size: 1.2rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 8px 20px rgba(243,186,47,0.3);
-            width: 100%;
-            text-align: center;
-        }
-        .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 12px 28px rgba(243,186,47,0.5);
-        }
-        .btn-secondary {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--muted);
-            color: var(--muted);
-            padding: 0.6rem 1.5rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.2s;
-        }
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
+    display: block;
+    background: linear-gradient(135deg, var(--accent), #ffb347);
+    color: #000;
+    text-decoration: none;
+    font-weight: 800;
+    padding: 0.9rem 2rem;
+    border-radius: 60px;
+    font-size: 1.2rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 20px rgba(243,186,47,0.3);
+    width: 77%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.btn-primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 28px rgba(243,186,47,0.5);
+}
         .testimonial {
             background: rgba(45,212,191,0.05);
             border-left: 4px solid var(--good);
@@ -165,28 +149,26 @@
             .grid-2 { grid-template-columns: 1fr; }
         }
 
-                .b1-footer {
+        /* Footer navegación */
+        .b1-footer {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             background: rgba(11, 14, 17, 0.85);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border-top: 1px solid var(--glass-border);
             box-shadow: 0 -10px 25px rgba(243, 186, 47, 0.08);
             z-index: 1001;
             height: 70px;
             padding-bottom: env(safe-area-inset-bottom);
         }
-
         .footer-container {
             display: flex;
             height: 100%;
             width: 100%;
             align-items: stretch;
         }
-
         .footer-item {
             flex: 1;
             display: flex;
@@ -199,11 +181,10 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-
         .footer-item::after {
             content: "";
             position: absolute;
@@ -216,82 +197,63 @@
             transform: translateX(-50%);
             box-shadow: 0 0 10px var(--accent);
         }
-
         .footer-item:active {
             background: rgba(243, 186, 47, 0.1);
             color: var(--accent);
         }
-
         .footer-item:active::after {
             width: 60%;
         }
-
         .footer-icon {
             font-size: 18px;
             margin-bottom: 4px;
             filter: grayscale(1) opacity(0.7);
             transition: all 0.3s ease;
         }
-
         .footer-item:active .footer-icon {
             filter: grayscale(0) opacity(1);
             transform: translateY(-2px);
         }
-.footer-item:active .footer-icon {
-    filter: grayscale(0) opacity(1);
-    transform: translateY(-2px);
-}
-
-.footer-item.active {
-    color: var(--accent);
-    pointer-events: none;
-}
-.footer-item.active::after {
-    width: 60%;
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-}
-.footer-item.active .footer-icon {
-    filter: grayscale(0) opacity(1);
-}
-
-/* Esto gana sobre casi cualquier otra regla */
-html, body, * {
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-user-drag: none !important;
-}
-
-/* Si tienes INPUTS donde SÍ quieres escribir, quita la línea de arriba para ellos: */
-input, textarea {
-    -webkit-user-select: text !important;
-    user-select: text !important;
-}
-
-/* Imágenes, canvas, tablas, cartas de poker */
-img, canvas, svg, table, td, tr, .carta, .ficha, .chip {
-    pointer-events: none !important;
-    -webkit-user-drag: none !important;
-    user-drag: none !important;
-}
-
-/* Si necesitas que algo sea clickeable (botones) recupera sus eventos */
-button, [role="button"], .clickable {
-    pointer-events: auto !important;
-    touch-action: manipulation !important;
-}
+        .footer-item.active {
+            color: var(--accent);
+            pointer-events: none;
+        }
+        .footer-item.active::after {
+            width: 60%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+        .footer-item.active .footer-icon {
+            filter: grayscale(0) opacity(1);
+        }
+        /* Protección de selección */
+        body, * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        input, textarea {
+            user-select: text !important;
+        }
+        img, canvas {
+            pointer-events: none;
+            user-drag: none;
+        }
+        button, [role="button"], .clickable {
+            pointer-events: auto;
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <span class="badge">🏆 PAGO ÚNICO · ACCESO DE POR VIDA</span>
-    <h1>Domina PLO5 Preflop<br>sin pagar suscripciones mensuales</h1>
-    <p style="font-size: 1.2rem; margin-bottom: 1rem;"><strong>Pago único. Acceso de por vida a PLO5 PRO.</strong><br>
-    El primer entrenador interactivo de PLO5 en español diseñado para automatizar tus decisiones preflop, corregir leaks y adaptarte al ecosistema actual.</p>
+    <span class="badge">🎁 PACK PROFESIONAL · PAGO ÚNICO</span>
+    <h1>El sistema completo para dominar PLO5<br>sin suscripciones mensuales</h1>
+    <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+        <strong>Pago único. Acceso de por vida al Poker Pack.</strong><br>
+        Entrena con feedback instantáneo, automatiza rangos y estudia con una estructura diseñada para grinders reales.
+
+Todo el sistema, explicaciones y roadmap están completamente en español...
+    </p>
 
     <div class="card-pro">
         <h2 style="margin-top: 0;">⚠️ La mayoría de los jugadores de PLO5 no pierden por mala suerte</h2>
@@ -305,14 +267,14 @@ button, [role="button"], .clickable {
         <p>Y cada pequeño leak termina costándote bb/100 durante miles de manos.</p>
     </div>
 
-    <h2>🚀 Por eso creamos PLO5 PRO</h2>
-    <p>No es otro curso pasivo.<br>No es contenido estático que estudias una vez y olvidas.<br><strong>Es un sistema de entrenamiento interactivo</strong> diseñado para convertir decisiones correctas en reflejos automáticos.</p>
+    <h2>🚀 Por eso creamos el Poker Pack</h2>
+    <p>No es un simple entrenador. Es un <strong>ecosistema de entrenamiento completo</strong> que incluye:</p>
 
     <div class="grid-2">
-        <div class="feature"><strong>🎯 Rangos validados</strong><br>Basado en análisis modernos adaptados al ecosistema actual de PLO5.</div>
-        <div class="feature"><strong>🔄 Modo Drill Ilimitado</strong><br>Practica miles de spots hasta automatizar decisiones complejas.</div>
-        <div class="feature"><strong>⚡ Feedback instantáneo</strong><br>Aprende exactamente por qué una acción es correcta o incorrecta.</div>
-        <div class="feature"><strong>📉 Métricas de Leak</strong><br>Detecta tus patrones de error y enfoca tu estudio donde recuperes más EV.</div>
+        <div class="feature"><strong>🃏 Entrenador Interactivo</strong><br>Miles de spots entrenables con lógica GTO moderna</div>
+        <div class="feature"><strong>📚 Curso Intensivo de 7 Días</strong><br>Día 1-2: Ataque, Día 3-4: Defensa, Día 5-6: Contraataque, Día 7: Monetización.</div>
+        <div class="feature"><strong>📅 Plan de Estudio Personalizado</strong><br>Ruta semanal adaptada a tu nivel y objetivos (principiante a regular).</div>
+        <div class="feature"><strong>👥 Grupo VIP de Estudio</strong><br>Comunidad privada con sesiones de análisis, torneos y soporte directo.</div>
     </div>
 
     <div class="card-pro">
@@ -333,12 +295,12 @@ button, [role="button"], .clickable {
         <tr><th>Alternativa</th><th>Coste</th></tr>
         <tr><td>Training Site / Solver</td><td>$99–300 <strong>/mes</strong></td></tr>
         <tr><td>Coaching privado</td><td>$100+ <strong>/hora</strong></td></tr>
-        <tr><td><span class="highlight">PLO5 PRO (pago único)</span></td><td><strong class="highlight">$199 una sola vez</strong></td></tr>
+        <tr><td><span class="highlight">Poker Pack (pago único)</span></td><td><strong class="highlight">$199 una sola vez</strong></td></tr>
     </table>
 
     <div class="price-box">
         <div class="price">$199 <span style="font-size: 1rem;">(pago único)</span></div>
-        <p style="margin: 0.5rem 0;">✅ Acceso Completo de por Vida<br>✅ Todas las mejoras base futuras<br>✅ Acceso inmediato + Soporte técnico<br>✅ Garantía de 7 días</p>
+        <p style="margin: 0.5rem 0;">✅ Acceso Completo de por Vida<br>✅ Entrenador + Curso + Plan VIP<br>✅ Todas las mejoras base futuras<br>✅ Garantía de 7 días</p>
     </div>
 
     <div class="card-pro" style="background: rgba(45,212,191,0.05); border-color: var(--good);">
@@ -351,8 +313,8 @@ button, [role="button"], .clickable {
         <p><strong>🛡️ Garantía Total de 7 Días</strong><br>Pruébalo sin riesgo. Si no te convence, te devolvemos cada centavo.</p>
     </div>
 
-    <a href="#" class="btn-primary" style="display: block; text-decoration: none;">🔥 QUIERO ACCEDER A PLO5 PRO</a>
-    <p style="text-align: center; margin-top: 0.8rem; font-size: 0.9rem;">✅ Pago único — acceso de por vida &nbsp;|&nbsp; ✅ Feedback instantáneo &nbsp;|&nbsp; ✅ Diseñado para el metagame actual</p>
+    <a href="#" class="btn-primary" style="display: block; text-decoration: none;">🔥 QUIERO MI POKER PACK</a>
+    <p style="text-align: center; margin-top: 0.8rem; font-size: 0.9rem;">✅ Pago único — acceso de por vida &nbsp;|&nbsp; ✅ Entrenador + Curso + Grupo VIP &nbsp;|&nbsp; ✅ Sin suscripciones</p>
 
     <p style="margin: 2rem 0 1rem; text-align: center; font-size: 1rem; font-weight: 500; color: var(--good);">
     Cada sesión que juegas con leaks preflop es dinero que dejas sobre la mesa.<br>
@@ -361,9 +323,10 @@ button, [role="button"], .clickable {
     </p>
 
     <div class="footer-small">
-        © 2025 PLO5 PRO — Diseñado por jugadores para jugadores. Consultas: soporte@plo5pro.com
+        © 2025 PLO5 Poker Pack — Diseñado por jugadores para jugadores. Consultas: soporte@plo5pro.com
     </div>
 </div>
+
 <footer class="b1-footer">
     <div class="footer-container">
         <a href="principal.html" class="footer-item">
@@ -380,65 +343,59 @@ button, [role="button"], .clickable {
         </a>
     </div>
 </footer>
+
 <script>
-// === 1. Telegram WebApp (si usas) ===
-const tg = window.Telegram?.WebApp;
-if (tg) {
-    tg.ready();
-    tg.expand();
-    tg.disableVerticalSwipes();
-}
+    // === Telegram WebApp (opcional) ===
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+        tg.disableVerticalSwipes();
+    }
 
-// === 2. Bloqueo GLOBAL con captura (esto atrapa todo) ===
-['contextmenu', 'selectstart', 'dragstart', 'copy', 'cut', 'paste'].forEach(evt => {
-    document.addEventListener(evt, (e) => {
-        // Permitir solo en inputs/textarea si quieres que escriban
-        const tag = e.target.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-        
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }, true); // true = fase de captura, atrapa antes de que llegue al elemento
-});
+    // === Bloqueo de selección y contexto (igual que antes) ===
+    ['contextmenu', 'selectstart', 'dragstart', 'copy', 'cut', 'paste'].forEach(evt => {
+        document.addEventListener(evt, (e) => {
+            const tag = e.target.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }, true);
+    });
 
-// === 3. Mutación para elementos que aparecen después ===
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1) { // Elemento HTML
-                node.setAttribute('draggable', 'false');
-                if (node.tagName === 'IMG') {
-                    node.style.pointerEvents = 'none';
-                    node.style.userSelect = 'none';
+    // Evitar arrastre de imágenes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    node.setAttribute('draggable', 'false');
+                    if (node.tagName === 'IMG') {
+                        node.style.pointerEvents = 'none';
+                        node.style.userSelect = 'none';
+                    }
+                    node.querySelectorAll?.('img').forEach(img => {
+                        img.setAttribute('draggable', 'false');
+                        img.style.pointerEvents = 'none';
+                    });
                 }
-                // Si el nodo tiene hijos, aplica a todos
-                node.querySelectorAll?.('img').forEach(img => {
-                    img.setAttribute('draggable', 'false');
-                    img.style.pointerEvents = 'none';
-                });
-            }
+            });
         });
     });
-});
-observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true });
 
-// === 4. Convertir enlaces <a> peligrosos a comportamiento app ===
-document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href]');
-    if (!a) return;
-    
-    // Si es enlace externo, abrirlo; si es interno, navegar sin menú
-    e.preventDefault();
-    const href = a.getAttribute('href');
-    
-    if (href.startsWith('http')) {
-        tg ? tg.openLink(href) : window.open(href, '_blank');
-    } else {
-        window.location.href = href;
-    }
-}, true);
-
+    // Manejo de clics en enlaces (sin recargar la página de Telegram)
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        e.preventDefault();
+        const href = a.getAttribute('href');
+        if (href.startsWith('http')) {
+            tg ? tg.openLink(href) : window.open(href, '_blank');
+        } else {
+            window.location.href = href;
+        }
+    }, true);
 </script>
 </body>
 </html>

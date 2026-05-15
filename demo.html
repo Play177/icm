@@ -841,6 +841,11 @@ button, [role="button"], .clickable {
     pointer-events: auto !important;
     touch-action: manipulation !important;
 }
+
+#playerAvatarSmall {
+    pointer-events: auto !important;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -1789,19 +1794,22 @@ function toggleTutorialItem(id) {
 }
 
     function shareTrainer() {
-        const url = window.location.href;
-        const message = "🎯 Entrena PLO5 como un profesional. Desafía tu juego y desbloquea barajas premium. ¡Pruébalo!";
-        if (navigator.share) {
-            navigator.share({
-                title: "PLO5 Ultimate Trainer",
-                text: message,
-                url: url
-            }).catch(() => showToast("Compartir cancelado"));
-        } else {
-            navigator.clipboard.writeText(url + "\n" + message);
+    const url = "https://t.me/JudoPokerBot/Plo5";  // Enlace fijo de Telegram
+    const message = "🎯 Entrena PLO5 como un profesional. Desafía tu juego y desbloquea barajas premium. ¡Pruébalo!";
+    
+    if (navigator.share) {
+        navigator.share({
+            title: "PLO5 Ultimate Trainer",
+            text: message,
+            url: url
+        }).catch(() => showToast("Compartir cancelado"));
+    } else {
+        // Fallback: copiar al portapapeles
+        navigator.clipboard.writeText(`${message}\n${url}`).then(() => {
             showToast("✅ Enlace copiado al portapapeles. ¡Compártelo con tus amigos!");
-        }
+        }).catch(() => showToast("❌ No se pudo copiar el enlace"));
     }
+}
 
     function showStatsModal() {
         const missionsCompleted = [
